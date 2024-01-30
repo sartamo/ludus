@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'hausaufgabenheft.dart';
+import 'faecherliste.dart';
 
 void main() => runApp(const Suppaapp());
 
@@ -45,9 +46,17 @@ class _HomepageState extends State<Homepage> {
       tabBuilder: (BuildContext context, int index) {
         return CupertinoTabView(
           builder: (BuildContext context) {
-            return Center(
-              child: Text('Content of tab $index'),
-            );
+            if(index==0){
+              return Faecherliste();
+            }
+            if(index==1){
+              return Hausaufgabenheft();
+            }
+            else{
+              return Center(
+                child: Text('Content of tab $index'),
+              );
+            }
           },
         );
       },
