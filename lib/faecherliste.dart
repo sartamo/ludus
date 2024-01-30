@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
 class Faecherliste extends StatefulWidget {
+  const Faecherliste({super.key});
+
   @override
   State<Faecherliste> createState() => _FaecherlisteState();
 }

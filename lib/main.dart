@@ -47,10 +47,10 @@ class _HomepageState extends State<Homepage> {
         return CupertinoTabView(
           builder: (BuildContext context) {
             if(index==0){
-              return Faecherliste();
+              return const Faecherliste();
             }
             if(index==1){
-              return Hausaufgabenheft();
+              return const Hausaufgabenheft();
             }
             else{
               return Center(
