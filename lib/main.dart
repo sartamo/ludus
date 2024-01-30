@@ -1,46 +1,61 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'hausaufgabenheft.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const Suppaapp());
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+
+class Suppaapp extends StatelessWidget {
+  const Suppaapp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const CupertinoApp(
       title: 'Schulus Appus',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Ludus'),
+      theme: CupertinoThemeData(brightness: Brightness.light),
+      home: Homepage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class Homepage extends StatefulWidget {
+  const Homepage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Homepage> createState() => _HomepageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
+class _HomepageState extends State<Homepage> {
   @override
+
+  Widget build(BuildContext context){
+      return CupertinoTabScaffold(
+        tabBar: CupertinoTabBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.list_bullet),
+              label: 'Fächerliste',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.book),
+              label: 'Hausaufgabenheft',
+            ),
+          ],
+        ), 
+        tabBuilder: (BuildContext context, int index) {
+        return CupertinoTabView(
+          builder: (BuildContext context) {
+            return Center(
+              child: Text('Content of tab $index'),
+            );
+          },
+        );
+      },
+    );
+  }
+  /*
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -85,4 +100,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+  */
 }
+
