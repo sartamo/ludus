@@ -1,23 +1,15 @@
 import 'package:flutter/material.dart';
 
-class HausaufgabenheftPage extends StatefulWidget {
+class Hausaufgabenheft extends StatefulWidget {
   @override
-  State<HausaufgabenheftPage> createState() => _HausaufgabenheftPageState();
+  State<Hausaufgabenheft> createState() => _HausaufgabenheftState();
 }
 
-class _HausaufgabenheftPageState extends State<HausaufgabenheftPage> {
+class _HausaufgabenheftState extends State<Hausaufgabenheft> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Second Page'),
-      ),
-      body: const Center(
-        child: Text(
-          'This is the second page!',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
+    return const Center(
+      child: Text('Willkommen im Hausaufgabenheft <3'),
     );
   }
 }

@@ -25,26 +25,24 @@ class Homepage extends StatefulWidget {
   State<Homepage> createState() => _HomepageState();
 }
 
-
-
 class _HomepageState extends State<Homepage> {
   @override
 
   Widget build(BuildContext context){
-      return CupertinoTabScaffold(
-        tabBar: CupertinoTabBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.list_bullet),
-              label: 'Fächerliste',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.book),
-              label: 'Hausaufgabenheft',
-            ),
-          ],
-        ), 
-        tabBuilder: (BuildContext context, int index) {
+    return CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.list_bullet),
+            label: 'Fächerliste',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.book),
+            label: 'Hausaufgabenheft',
+          ),
+        ],
+      ), 
+      tabBuilder: (BuildContext context, int index) {
         return CupertinoTabView(
           builder: (BuildContext context) {
             return Center(
