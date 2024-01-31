@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'hausaufgabenheft.dart';
 import 'faecherliste.dart';
+import 'stundenplan.dart';
+import 'einstellungen.dart';
 
 void main() => runApp(const Suppaapp());
 
@@ -41,6 +43,14 @@ class _HomepageState extends State<Homepage> {
             icon: Icon(CupertinoIcons.book),
             label: 'Hausaufgabenheft',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.time),
+            label: 'Stundenplan'
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.settings),
+            label: 'Einstellungen'
+          ),
         ],
       ), 
       tabBuilder: (BuildContext context, int index) {
@@ -49,12 +59,18 @@ class _HomepageState extends State<Homepage> {
             if(index==0){
               return const Faecherliste();
             }
-            if(index==1){
+            else if(index==1){
               return const Hausaufgabenheft();
             }
+            else if (index==2){
+              return const Stundenplan();
+            }
+            else if (index==3){
+              return const Einstellungen();
+            }
             else{
-              return Center(
-                child: Text('Content of tab $index'),
+              return const Center(
+                child: Text('Fehlerhafte Implementierung von Seitenwechsel'), // Wird normalerweise nicht angezeigt
               );
             }
           },
