@@ -3,6 +3,8 @@ import 'hausaufgabenheft.dart';
 import 'faecherliste.dart';
 import 'stundenplan.dart';
 import 'einstellungen.dart';
+import 'faecher.dart';
+import 'globals.dart';
 
 void main() => runApp(const Suppaapp());
 
@@ -66,7 +68,7 @@ class _HomepageState extends State<Homepage> {
               return const Stundenplan();
             }
             else if (index==3){
-              return const Einstellungen();
+              return const Fach('Mathematik', {0 : 0, 3 : 2, 4 : 5}); // Nur temporär zum Test
             }
             else{
               return const Center(

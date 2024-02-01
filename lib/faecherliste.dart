@@ -1,4 +1,7 @@
+// Die Seite für die Fächerliste
+
 import 'package:flutter/cupertino.dart';
+import 'globals.dart';
 
 class Faecherliste extends StatefulWidget {
   const Faecherliste({super.key});

@@ -1,4 +1,7 @@
+// Die Seite für das Hausaufgabenheft
+
 import 'package:flutter/cupertino.dart';
+import 'globals.dart';
 
 class Hausaufgabenheft extends StatefulWidget {
   const Hausaufgabenheft({super.key});
