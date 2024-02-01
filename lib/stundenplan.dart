@@ -1,7 +1,6 @@
 // Seite für den Stundenplan
 
 import 'package:flutter/cupertino.dart';
-import 'globals.dart';
 
 class Stundenplan extends StatefulWidget {
   const Stundenplan({super.key});
