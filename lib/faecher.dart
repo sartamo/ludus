@@ -34,20 +34,38 @@ class Fach extends StatefulWidget {
 
 class _FachState extends State<Fach> {
   late List<Text> display;
+  late String name;
 
   @override
   void initState(){
     display = widget.getDisplay();
+    name = widget.name;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: display,
-      )
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        leading: CupertinoNavigationBarBackButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        middle: Text(name),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: display,
+        ),
+      ),
     );
   }
 }
+
+List<Fach> faecher = [
+  const Fach('Mathematik', {0 : [3], 2 : [0], 4 : [5]}),
+  const Fach('Deutsch', {1 : [4, 5], 4 : [0]}),
+  const Fach('Englisch', {2 : [3], 3 : [5], 4 : [3, 4]})
+];
