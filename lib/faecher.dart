@@ -33,13 +33,13 @@ class Fach extends StatefulWidget {
 }
 
 class _FachState extends State<Fach> {
-  late List<Text> display;
-  late String name;
+  late List<Text> _display;
+  late String _name;
 
   @override
   void initState(){
-    display = widget.getDisplay();
-    name = widget.name;
+    _display = widget.getDisplay();
+    _name = widget.name;
     super.initState();
   }
 
@@ -52,12 +52,12 @@ class _FachState extends State<Fach> {
             Navigator.pop(context);
           },
         ),
-        middle: Text(name),
+        middle: Text(_name),
       ),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: display,
+          children: _display,
         ),
       ),
     );
