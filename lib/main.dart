@@ -21,16 +21,10 @@ class Suppaapp extends StatelessWidget {
   }
 }
 
-class Homepage extends StatefulWidget {
+class Homepage extends StatelessWidget {
   const Homepage({super.key});
 
   @override
-  State<Homepage> createState() => _HomepageState();
-}
-
-class _HomepageState extends State<Homepage> {
-  @override
-
   Widget build(BuildContext context){
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
@@ -78,51 +72,4 @@ class _HomepageState extends State<Homepage> {
       },
     );
   }
-  /*
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Fächerliste',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Hausaufgabenheft',
-          ),
-        ],
-        
-          onTap: (index) {
-            if (index == 0) {
-              _incrementCounter();
-            }
-            if(index == 1) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HausaufgabenheftPage()),
-              );
-            }
-          },
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-  */
 }
-
