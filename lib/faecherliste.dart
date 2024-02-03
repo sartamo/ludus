@@ -34,9 +34,11 @@ class _FaecherlisteState extends State<Faecherliste> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      child: CupertinoListSection(
-        header: const Text('Fächer'),
-        children: widget.getFaecher(context),
+      child: Center(
+        child: CupertinoListSection(
+          header: const Text('Fächer'),
+          children: widget.getFaecher(context),
+        ),
       ),
     );
   }
