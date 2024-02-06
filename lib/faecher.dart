@@ -1,7 +1,7 @@
 // Das Management der einzelnen Fächer
 
 import 'package:flutter/cupertino.dart';
-import 'globals.dart';
+import 'package:suppaapp/globals.dart';
 
 class Fach extends StatefulWidget {
 
@@ -9,23 +9,6 @@ class Fach extends StatefulWidget {
   final Map<int, List<int>> zeiten; // Die Zeiten des Fachs: Wochentag wird Stunde(n) zugeordnet
 
   const Fach(this.name, this.zeiten, {super.key});
-
-  List<Text> getDisplay(){  // Gibt den anzuzeigenden Text an _FachState
-    List<Text> display = [
-      Text('Willkommen im Fach $name'),
-      const Text('Unterrichtszeiten:'),
-    ];
-
-    for (int w in [0, 1, 2, 3, 4]) {
-      List<int>? st = zeiten[w];
-      if (st != null) {
-        for (int s in st){
-          display.add(Text('${wochentage[w]}, ${stunden[s]}')); // Zeigt für jeden Wochentag w die dazugehörige Uhrzeit an.
-        }
-      }
-    }
-    return display;
-  }
 
   @override
   State<Fach> createState() => _FachState();
@@ -36,9 +19,26 @@ class _FachState extends State<Fach> {
   late List<Text> _display;
   late String _name;
 
+  List<Text> _getDisplay(){  // Gibt den anzuzeigenden Text an _FachState
+    List<Text> display = [
+      Text('Willkommen im Fach ${widget.name}'),
+      const Text('Unterrichtszeiten:'),
+    ];
+
+    for (int w in [0, 1, 2, 3, 4]) {
+      List<int>? st = widget.zeiten[w];
+      if (st != null) {
+        for (int s in st){
+          display.add(Text('${wochentage[w]}, ${stunden[s]}')); // Zeigt für jeden Wochentag w die dazugehörige Uhrzeit an.
+        }
+      }
+    }
+    return display;
+  }
+
   @override
   void initState(){
-    _display = widget.getDisplay();
+    _display = _getDisplay();
     _name = widget.name;
     super.initState();
   }

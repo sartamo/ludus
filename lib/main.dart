@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'hausaufgabenheft.dart';
-import 'faecherliste.dart';
-import 'stundenplan.dart';
-import 'einstellungen.dart';
+import 'package:suppaapp/hausaufgabenheft.dart';
+import 'package:suppaapp/faecherliste.dart';
+import 'package:suppaapp/stundenplan.dart';
+import 'package:suppaapp/einstellungen.dart';
 
 void main() => runApp(const Suppaapp());
 

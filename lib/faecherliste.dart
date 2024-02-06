@@ -1,14 +1,21 @@
 // Die Seite für die Fächerliste
 
 import 'package:flutter/cupertino.dart';
-import 'faecher.dart';
-import 'globals.dart';
+import 'package:suppaapp/FaecherEinstellungen/hinzufuegen.dart';
+import 'package:suppaapp/faecher.dart';
+import 'package:suppaapp/globals.dart';
 
 class Faecherliste extends StatefulWidget {
   const Faecherliste({super.key});
 
-  List<CupertinoListTile> getFaecher(BuildContext context) {
-    List<CupertinoListTile> feacherList = [];
+  @override
+  State<Faecherliste> createState() => _FaecherlisteState();
+}
+
+class _FaecherlisteState extends State<Faecherliste> {
+
+  List<CupertinoListTile> _getFaecher(BuildContext context) {
+    List<CupertinoListTile> faecherList = [];
     late int i;
     late int j;
     late String mySubtitle;
@@ -28,12 +35,12 @@ class Faecherliste extends StatefulWidget {
               mySubtitle += ', ';
             }
             j += 1;
-            mySubtitle += '${stunden[s]}';
+            mySubtitle += stunden[s];
           }
           mySubtitle += ')';
         }
       }
-      feacherList.add(
+      faecherList.add(
         CupertinoListTile(
           title: Text(myFach.name),
           subtitle: Text(mySubtitle),
@@ -61,22 +68,28 @@ class Faecherliste extends StatefulWidget {
         ),
       );
     }
-    return feacherList;
+    return faecherList;
   }
-
-  @override
-  State<Faecherliste> createState() => _FaecherlisteState();
-}
-
-class _FaecherlisteState extends State<Faecherliste> {
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      child: Center(
-        child: CupertinoListSection(
-          children: widget.getFaecher(context),
-        ),
+      child: Column(
+        children: [
+          CupertinoNavigationBar(
+            middle: const Text('Fächerliste'),
+            trailing: CupertinoButton(
+              padding: EdgeInsets.zero,
+              child: const Icon(CupertinoIcons.add),
+              onPressed: () => Navigator.of(context).push(
+                CupertinoPageRoute(builder: (context) => const FachHinzufuegen())
+              ),
+            ),
+          ),
+          CupertinoListSection(
+            children: _getFaecher(context),
+          ),
+        ],
       ),
     );
   }
