@@ -24,7 +24,7 @@ class _FaecherlisteState extends State<Faecherliste> {
       mySubtitle = '';
       i = 0; // Damit die Kommata richtig zwischen den Wochentagen gesetzt werden
       for (int w in [0, 1, 2, 3, 4]) { // Geht die Wochentage durch
-        List<int>? myZeiten = myFach.zeiten[w];
+        Set<int>? myZeiten = myFach.zeiten[w];
         if (myZeiten != null) {
           if (i != 0){mySubtitle += ', ';}
           j = 0; // Damit die Kommata richtig zwischen den Stunden gesetzt werden
