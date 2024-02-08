@@ -13,62 +13,36 @@ class Faecherliste extends StatefulWidget {
 }
 
 class _FaecherlisteState extends State<Faecherliste> {
-
-  List<CupertinoListTile> _getFaecher(BuildContext context) {
-    List<CupertinoListTile> faecherList = [];
-    late int i;
-    late int j;
-    late String mySubtitle;
-
-    for (Fach myFach in faecher) {
-      mySubtitle = '';
-      i = 0; // Damit die Kommata richtig zwischen den Wochentagen gesetzt werden
-      for (int w in [0, 1, 2, 3, 4]) { // Geht die Wochentage durch
+  String _getSubtitle(Fach myFach) {
+    String mySubtitle = '';
+      int counter = 0; // Damit die Kommata richtig zwischen den Wochentagen gesetzt werden
+      for (int w = 0; w < wochentage.length; w++) { // Geht die Wochentage durch
         Set<int>? myZeiten = myFach.zeiten[w];
         if (myZeiten != null) {
-          if (i != 0){mySubtitle += ', ';}
-          j = 0; // Damit die Kommata richtig zwischen den Stunden gesetzt werden
-          i += 1;
+          if (counter != 0){
+            mySubtitle += ', ';
+          }
+          int counter2 = 0; // Damit die Kommata richtig zwischen den Stunden gesetzt werden
+          counter++;
           mySubtitle += '${wochentage[w]} (';
           for (int s in myZeiten) {
-            if (j != 0) {
+            if (counter2 != 0) {
               mySubtitle += ', ';
             }
-            j += 1;
+            counter2++;
             mySubtitle += stunden[s];
           }
           mySubtitle += ')';
         }
       }
-      faecherList.add(
-        CupertinoListTile(
-          title: Text(myFach.name),
-          subtitle: Text(mySubtitle),
-          trailing: Row(
-            children: [
-              CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: const Icon(CupertinoIcons.settings),
-                onPressed: () {},
-              ),
-              CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: const Icon(CupertinoIcons.minus),
-                onPressed: () {},
-              ),
-            ],
-          ),
-          onTap: () {
-            Navigator.of(context).push(
-              CupertinoPageRoute(
-                builder: (context) => myFach
-              ),
-            );
-          },
-        ),
-      );
-    }
-    return faecherList;
+      return mySubtitle;
+  }
+
+  Future<Fach> _fachHinzufuegen() async {
+    Fach result = await Navigator.of(context).push(
+      CupertinoPageRoute(builder: (context) => const FachHinzufuegen())
+    );
+    return result;
   }
 
   @override
@@ -81,13 +55,45 @@ class _FaecherlisteState extends State<Faecherliste> {
             trailing: CupertinoButton(
               padding: EdgeInsets.zero,
               child: const Icon(CupertinoIcons.add),
-              onPressed: () => Navigator.of(context).push(
-                CupertinoPageRoute(builder: (context) => const FachHinzufuegen())
-              ),
+              onPressed: () async {
+                Future<Fach> result = _fachHinzufuegen();
+                result.then((output) {
+                  setState(() => faecher.add(output));
+                });
+              },
             ),
           ),
-          CupertinoListSection(
-            children: _getFaecher(context),
+          faecher.isEmpty
+          ? const Center(
+            child: Text('Füge Fächer hinzu, damit sie hier erscheinen'))
+          : CupertinoListSection(        
+            children: List<Widget>.generate(faecher.length, (index) {
+              return CupertinoListTile(
+                title: Text(faecher[index].name),
+                subtitle: Text(_getSubtitle(faecher[index])),
+                trailing: Row(
+                  children: [
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      child: const Icon(CupertinoIcons.settings),
+                      onPressed: () {},
+                    ),
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      child: const Icon(CupertinoIcons.minus),
+                      onPressed: () => setState(() => faecher.remove(faecher[index])),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) => faecher[index]
+                    ),
+                  );
+                },
+              );
+            }),
           ),
         ],
       ),

@@ -16,6 +16,7 @@ class _FachHinzufuegenState extends State<FachHinzufuegen> {
 
   int _selectedTag = 0;
   int _selectedStunde = 0;
+  String _selectedName = '';
   final SplayTreeMap<int,SplayTreeSet<int>> _zeiten = SplayTreeMap(); // SplayTreeMap: Automatische Sortierung
 
   SplayTreeSet<int> _addZeit(int tag, int stunde) {
@@ -57,6 +58,11 @@ class _FachHinzufuegenState extends State<FachHinzufuegen> {
         leading: CupertinoNavigationBarBackButton(
           onPressed: () => Navigator.of(context).pop(),
         ),
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: const Icon(CupertinoIcons.check_mark),
+          onPressed: () => Navigator.of(context).pop(Fach(_selectedName, _zeiten)),
+        ),
       ),
       child: SafeArea(  // Erstellt eine "Knauschzone" um die Ränder des Bildschirms
         minimum: EdgeInsets.symmetric(
@@ -64,14 +70,16 @@ class _FachHinzufuegenState extends State<FachHinzufuegen> {
           vertical: MediaQuery.of(context).size.height * 0.07
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
           // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CupertinoTextField(
+            CupertinoTextField(
               autofocus: true,
               placeholder: 'Fächername',
+              onChanged: (value) => _selectedName = value,
             ),
             CupertinoButton(
+              padding: const EdgeInsets.only(top: 20, bottom: 10),
               child: const Text('Zeit hinzufügen'),
               onPressed: () {
                 showCupertinoModalPopup(
@@ -95,7 +103,7 @@ class _FachHinzufuegenState extends State<FachHinzufuegen> {
                           child: CupertinoPicker(
                             magnification: 1.1,
                             useMagnifier: true,
-                            itemExtent: 40,
+                            itemExtent: 45,
                             scrollController: FixedExtentScrollController(
                               initialItem: _selectedTag,
                             ),
@@ -107,7 +115,7 @@ class _FachHinzufuegenState extends State<FachHinzufuegen> {
                           child: CupertinoPicker(
                             magnification: 1.1,
                             useMagnifier: true,
-                            itemExtent: 40,
+                            itemExtent: 45,
                             scrollController: FixedExtentScrollController(
                               initialItem: _selectedStunde,
                             ),
@@ -131,7 +139,7 @@ class _FachHinzufuegenState extends State<FachHinzufuegen> {
               }
             ),
             ListView.builder(
-              itemExtent: 35,
+              itemExtent: 50,
               shrinkWrap: true,
               itemCount: _zeiten.length,
               itemBuilder:(_, index) {
@@ -140,6 +148,11 @@ class _FachHinzufuegenState extends State<FachHinzufuegen> {
                     Text(wochentage[_zeiten.keys.toList()[index]]),
                     const Spacer(),
                     Text(getSubtitles()[index]),
+                    CupertinoButton(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: const Icon(CupertinoIcons.minus),
+                      onPressed: () => setState(() => _zeiten.remove(_zeiten.keys.toList()[index]))
+                    )
                   ],
                 );
               },
