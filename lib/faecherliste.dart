@@ -48,54 +48,61 @@ class _FaecherlisteState extends State<Faecherliste> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      child: Column(
-        children: [
-          CupertinoNavigationBar(
-            middle: const Text('Fächerliste'),
-            trailing: CupertinoButton(
-              padding: EdgeInsets.zero,
-              child: const Icon(CupertinoIcons.add),
-              onPressed: () async {
-                Future<Fach> result = _fachHinzufuegen();
-                result.then((output) {
-                  setState(() => faecher.add(output));
-                });
-              },
-            ),
-          ),
-          faecher.isEmpty
-          ? const Center(
-            child: Text('Füge Fächer hinzu, damit sie hier erscheinen'))
-          : CupertinoListSection(        
-            children: List<Widget>.generate(faecher.length, (index) {
-              return CupertinoListTile(
-                title: Text(faecher[index].name),
-                subtitle: Text(_getSubtitle(faecher[index])),
-                trailing: Row(
-                  children: [
-                    CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      child: const Icon(CupertinoIcons.settings),
-                      onPressed: () {},
-                    ),
-                    CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      child: const Icon(CupertinoIcons.minus),
-                      onPressed: () => setState(() => faecher.remove(faecher[index])),
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute(
-                      builder: (context) => faecher[index]
-                    ),
-                  );
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            CupertinoNavigationBar(
+							leading: CupertinoButton(
+								padding: EdgeInsets.zero,
+								child: const Icon(CupertinoIcons.refresh),
+								onPressed: () => setState(() {}),
+							),
+              middle: const Text('Fächerliste'),
+              trailing: CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: const Icon(CupertinoIcons.add),
+                onPressed: () async {
+                  Future<Fach> result = _fachHinzufuegen();
+                  result.then((output) {
+                    setState(() => faecher.add(output));
+                  });
                 },
-              );
-            }),
-          ),
-        ],
+              ),
+            ),
+						faecher.isEmpty
+						? const Center(
+							child: Text('Füge Fächer hinzu, damit sie hier erscheinen'))
+						: CupertinoListSection(        
+							children: List<Widget>.generate(faecher.length, (index) {
+								return CupertinoListTile(
+									title: Text(faecher[index].name),
+									subtitle: Text(_getSubtitle(faecher[index])),
+									trailing: Row(
+										children: [
+											CupertinoButton(
+												padding: EdgeInsets.zero,
+												child: const Icon(CupertinoIcons.settings),
+												onPressed: () {},
+											),
+											CupertinoButton(
+												padding: EdgeInsets.zero,
+												child: const Icon(CupertinoIcons.minus),
+												onPressed: () => setState(() => faecher.remove(faecher[index])),
+											),
+										],
+									),
+									onTap: () {
+										Navigator.of(context).push(
+											CupertinoPageRoute(
+												builder: (context) => faecher[index]
+											),
+										);
+									},
+								);
+							}),
+						),
+					],
+				),
       ),
     );
   }
