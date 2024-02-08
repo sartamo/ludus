@@ -6,7 +6,7 @@ import 'package:suppaapp/globals.dart';
 class Fach extends StatefulWidget {
 
   final String name;
-  final Map<int, List<int>> zeiten; // Die Zeiten des Fachs: Wochentag wird Stunde(n) zugeordnet
+  final Map<int, Set<int>> zeiten; // Die Zeiten des Fachs: Wochentag wird Stunde(n) zugeordnet
 
   const Fach(this.name, this.zeiten, {super.key});
 
@@ -26,7 +26,7 @@ class _FachState extends State<Fach> {
     ];
 
     for (int w in [0, 1, 2, 3, 4]) {
-      List<int>? st = widget.zeiten[w];
+      Set<int>? st = widget.zeiten[w];
       if (st != null) {
         for (int s in st){
           display.add(Text('${wochentage[w]}, ${stunden[s]}')); // Zeigt für jeden Wochentag w die dazugehörige Uhrzeit an.
@@ -63,7 +63,7 @@ class _FachState extends State<Fach> {
 }
 
 List<Fach> faecher = [
-  const Fach('Mathematik', {0 : [3], 2 : [0], 4 : [5]}),
-  const Fach('Deutsch', {1 : [4, 5], 4 : [0]}),
-  const Fach('Englisch', {2 : [3], 3 : [5], 4 : [3, 4]})
+  const Fach('Mathematik', {0 : {3}, 2 : {0}, 4 : {5}}),
+  const Fach('Deutsch', {1 : {4, 5}, 4 : {0}}),
+  const Fach('Englisch', {2 : {3}, 3 : {5}, 4 : {3, 4}})
 ];
