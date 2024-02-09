@@ -1,6 +1,7 @@
 // Seite für den Stundenplan
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:suppaapp/FaecherEinstellungen/hinzufuegen.dart';
 import 'package:suppaapp/globals.dart';
 import 'package:suppaapp/faecher.dart';
@@ -86,7 +87,8 @@ class _StundenplanState extends State<Stundenplan> {
     final double breite = MediaQuery.of(context).size.width /
         (wochentage.length + 1); //breite der Spalten
 
-    List<Widget> tage = List.generate((wochentage.length), (d) {  //Liste von wochentage.length Collumns it den jewailigen Stunden als CupertinoButton
+    List<Widget> tage = List.generate((wochentage.length), (d) {
+      //Liste von wochentage.length Collumns it den jewailigen Stunden als CupertinoButton
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -135,60 +137,50 @@ class _StundenplanState extends State<Stundenplan> {
     }).toList();
 
     return Padding(
+      //main Widget
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
       child: SingleChildScrollView(
         child: Column(
           children: [
             CupertinoNavigationBar(
               middle: const Text('Stundenplan'),
-              trailing: CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: const Icon(CupertinoIcons.settings),
-                onPressed: () {
-                  showCupertinoModalPopup(
-                    context: context,
-                    builder: (BuildContext context) => CupertinoActionSheet(
-                      title: const Text('Settings'),
-                      message: const Text('Select an option'),
-                      actions: <CupertinoActionSheetAction>[
-                        CupertinoActionSheetAction(
-                          child: const Text('Ändere den Stundenplan'),
-                          onPressed: () {
-                            Navigator.pop(context, 'Option 1');
-                            // Add your code for Option 1 here
-                          },
-                        ),
-                        CupertinoActionSheetAction(
-                          child: const Text('Füge Fach hinzu'),
-                          onPressed: () {
-                            result() async {
-                              Navigator.pop(context);
-                              return await Navigator.of(context).push(
-                                CupertinoPageRoute(
-                                    builder: (context) =>
-                                        const FachHinzufuegen()),
-                              );
-                            }
-
-                            result().then((output) {
-                              setState(() => faecherList.addFach(output));
-                            });
-                          },
-                        ),
-                        // Add more options here
-                      ],
-                      cancelButton: CupertinoActionSheetAction(
-                        child: const Text('Cancel'),
-                        onPressed: () {
-                          Navigator.pop(context, 'Cancel');
-                        },
-                      ),
+              trailing: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Tooltip(
+                    message: 'Stundenplan ändern',
+                    child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      child: const Icon(CupertinoIcons.settings),
+                      onPressed: () {
+                        setState(() {});
+                      },
                     ),
-                  );
-                },
+                  ),
+                  Tooltip(
+                    message: 'Fach hinzufügen',
+                    child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      child: const Icon(CupertinoIcons.add),
+                      onPressed: () {
+                        result() async {
+                          return await Navigator.of(context).push(
+                            CupertinoPageRoute(
+                                builder: (context) => const FachHinzufuegen()),
+                          );
+                        }
+
+                        result().then((output) {
+                          setState(() => faecherList.addFach(output));
+                        });
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
             Row(
+              //main Row
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
