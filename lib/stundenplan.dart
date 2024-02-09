@@ -105,11 +105,6 @@ class _StundenplanState extends State<Stundenplan> {
         child: Column(
           children: [
             CupertinoNavigationBar(
-              leading: CupertinoButton(
-								padding: EdgeInsets.zero,
-								child: const Icon(CupertinoIcons.refresh),
-								onPressed: () => setState(() {}),
-							),
               middle: const Text('Stundenplan'),
               trailing: CupertinoButton(
                 padding: EdgeInsets.zero,

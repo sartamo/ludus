@@ -61,12 +61,7 @@ class _FaecherlisteState extends State<Faecherliste> {
         child: Column(
           children: [
             CupertinoNavigationBar(
-							leading: CupertinoButton(
-								padding: EdgeInsets.zero,
-								child: const Icon(CupertinoIcons.refresh),
-								onPressed: () => setState(() {}),
-							),
-              middle: const Text('Fächerliste'),
+							middle: const Text('Fächerliste'),
               trailing: CupertinoButton(
                 padding: EdgeInsets.zero,
                 child: const Icon(CupertinoIcons.add),
