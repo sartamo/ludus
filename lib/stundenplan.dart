@@ -18,17 +18,19 @@ class _StundenplanState extends State<Stundenplan> {
   final Color _hourColor = CupertinoColors.activeOrange;
   final Color _freeColor = CupertinoColors.systemGrey2;
 
-  final List<List<String>> _stundenplanA = List.generate(
-      wochentage.length, (_) => List.filled(stunden.length, ''));
+  List<List<String>> _stundenplanA =
+      List.generate(wochentage.length, (_) => List.filled(stunden.length, ''));
 
-  void _aktualisiereStundenplan(List<List<String>> stundenplanA) {
+  void _aktualisiereStundenplan() {
+    _stundenplanA = List.generate(
+        wochentage.length, (_) => List.filled(stunden.length, ''));
     for (int f = 0; f < faecherList.faecher.length; f++) {
       Fach myFach = faecherList.faecher[f];
       for (int w = 0; w < wochentage.length; w++) {
         Set<int>? myZeiten = myFach.zeiten[w];
         if (myZeiten != null) {
           for (int s in myZeiten) {
-            stundenplanA[w][s] = myFach.name;
+            _stundenplanA[w][s] = myFach.name;
           }
         }
       }
@@ -36,18 +38,20 @@ class _StundenplanState extends State<Stundenplan> {
   }
 
   @override
-  void initState () {
+  void initState() {
     super.initState();
     faecherList.addListener(() {
+      _aktualisiereStundenplan();
       setState(() {});
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    _aktualisiereStundenplan(_stundenplanA);
+    _aktualisiereStundenplan();
 
-    final double breite = MediaQuery.of(context).size.width / (wochentage.length + 1);
+    final double breite =
+        MediaQuery.of(context).size.width / (wochentage.length + 1);
 
     List<Widget> tage = List.generate((wochentage.length), (index) {
       return Column(
