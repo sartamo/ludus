@@ -151,7 +151,7 @@ class _StundenplanState extends State<Stundenplan> {
                     message: 'Stundenplan ändern',
                     child: CupertinoButton(
                       padding: EdgeInsets.zero,
-                      child: const Icon(CupertinoIcons.settings),
+                      child: const Icon(CupertinoIcons.table_badge_more),
                       onPressed: () {
                         setState(() {});
                       },

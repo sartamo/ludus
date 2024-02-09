@@ -38,7 +38,7 @@ class Homepage extends StatelessWidget {
             label: 'Hausaufgabenheft',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.time),
+            icon: Icon(CupertinoIcons.table),
             label: 'Stundenplan'
           ),
           BottomNavigationBarItem(
