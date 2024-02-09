@@ -18,19 +18,19 @@ class _StundenplanState extends State<Stundenplan> {
   final Color _hourColor = CupertinoColors.activeOrange;
   final Color _freeColor = CupertinoColors.systemGrey2;
 
-  List<List<String>> _stundenplanA =
-      List.generate(wochentage.length, (_) => List.filled(stunden.length, ''));
+  List<List<List<String>>> _stundenplanA = List.generate(
+      wochentage.length, (_) => List.generate(stunden.length, (_) => []));
 
   void _aktualisiereStundenplan() {
     _stundenplanA = List.generate(
-        wochentage.length, (_) => List.filled(stunden.length, ''));
+        wochentage.length, (_) => List.generate(stunden.length, (_) => []));
     for (int f = 0; f < faecherList.faecher.length; f++) {
       Fach myFach = faecherList.faecher[f];
       for (int w = 0; w < wochentage.length; w++) {
         Set<int>? myZeiten = myFach.zeiten[w];
         if (myZeiten != null) {
           for (int s in myZeiten) {
-            _stundenplanA[w][s] = myFach.name;
+            _stundenplanA[w][s].add(myFach.name);
           }
         }
       }
@@ -53,7 +53,7 @@ class _StundenplanState extends State<Stundenplan> {
     final double breite =
         MediaQuery.of(context).size.width / (wochentage.length + 1);
 
-    List<Widget> tage = List.generate((wochentage.length), (index) {
+    List<Widget> tage = List.generate((wochentage.length), (d) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -66,11 +66,12 @@ class _StundenplanState extends State<Stundenplan> {
               color: _firstColumnColor,
               disabledColor: _firstColumnColor,
               pressedOpacity: 1.0,
-              child: Text(wochentage[index]), // Display the value of 'tag'
+              child: Text(wochentage[
+                  d]), // d is the index of the day; h is the index of the hour
             ),
           ),
-          ...List.generate(stunden.length, (index2) {
-            if (_stundenplanA[index][index2] == '') {
+          ...List.generate(stunden.length, (h) {
+            if (_stundenplanA[d][h].isEmpty) {
               return SizedBox(
                 height: _hoehe,
                 width: breite,
@@ -80,21 +81,29 @@ class _StundenplanState extends State<Stundenplan> {
                   color: _freeColor,
                   disabledColor: _freeColor,
                   pressedOpacity: 1.0,
-                  child: const Text('Frei'), // Display the value of 'tag'
+                  child: const Text('Frei'),
                 ),
               );
             } else {
               return SizedBox(
                 height: _hoehe,
                 width: breite,
-                child: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () {},
-                  color: _hourColor,
-                  disabledColor: _hourColor,
-                  pressedOpacity: 1.0,
-                  child: Text(_stundenplanA[index]
-                      [index2]), // Display the value of 'tag'
+                child: Row(
+                  children: List.generate(_stundenplanA[d][h].length, (a) {
+                    return Expanded(
+                      child: Container(
+                        height: _hoehe,
+                        child: CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {},
+                          color: _hourColor,
+                          disabledColor: _hourColor,
+                          pressedOpacity: 1.0,
+                          child: Text(_stundenplanA[d][h][a]),
+                        ),
+                      ),
+                    );
+                  }),
                 ),
               );
             }
