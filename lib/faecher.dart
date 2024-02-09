@@ -80,6 +80,11 @@ class FaecherList extends ChangeNotifier {
     _faecher.remove(_faecher[index]);
     notifyListeners();
   }
+
+  void updateFach(int index, Fach newFach) {
+    _faecher[index] = newFach;
+    notifyListeners();
+  }
 }
 
 final faecherList = FaecherList();
