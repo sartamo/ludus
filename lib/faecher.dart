@@ -62,8 +62,24 @@ class _FachState extends State<Fach> {
   }
 }
 
-List<Fach> faecher = [
-  const Fach('Mathematik', {0 : {3}, 2 : {0}, 4 : {5}}),
-  const Fach('Deutsch', {1 : {4, 5}, 4 : {0}}),
-  const Fach('Englisch', {2 : {3}, 3 : {5}, 4 : {3, 4}})
-];
+class FaecherList extends ChangeNotifier {
+  final List<Fach> _faecher = [
+    const Fach('Mathematik', {0 : {3}, 2 : {0}, 4 : {5}}),
+    const Fach('Deutsch', {1 : {4, 5}, 4 : {0}}),
+    const Fach('Englisch', {2 : {3}, 3 : {5}, 4 : {3, 4}})
+  ];
+
+  List<Fach> get faecher => _faecher;
+
+  void addFach(Fach fach) {
+    _faecher.add(fach);
+    notifyListeners();
+  }
+
+  void removeFach(int index) {
+    _faecher.remove(_faecher[index]);
+    notifyListeners();
+  }
+}
+
+final faecherList = FaecherList();

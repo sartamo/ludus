@@ -46,6 +46,15 @@ class _FaecherlisteState extends State<Faecherliste> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    faecherList.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       child: SingleChildScrollView(
@@ -64,19 +73,19 @@ class _FaecherlisteState extends State<Faecherliste> {
                 onPressed: () async {
                   Future<Fach> result = _fachHinzufuegen();
                   result.then((output) {
-                    setState(() => faecher.add(output));
+                    setState(() => faecherList.addFach(output));
                   });
                 },
               ),
             ),
-						faecher.isEmpty
+						faecherList.faecher.isEmpty
 						? const Center(
 							child: Text('Füge Fächer hinzu, damit sie hier erscheinen'))
 						: CupertinoListSection(        
-							children: List<Widget>.generate(faecher.length, (index) {
+							children: List<Widget>.generate(faecherList.faecher.length, (index) {
 								return CupertinoListTile(
-									title: Text(faecher[index].name),
-									subtitle: Text(_getSubtitle(faecher[index])),
+									title: Text(faecherList.faecher[index].name),
+									subtitle: Text(_getSubtitle(faecherList.faecher[index])),
 									trailing: Row(
 										children: [
 											CupertinoButton(
@@ -87,14 +96,14 @@ class _FaecherlisteState extends State<Faecherliste> {
 											CupertinoButton(
 												padding: EdgeInsets.zero,
 												child: const Icon(CupertinoIcons.minus),
-												onPressed: () => setState(() => faecher.remove(faecher[index])),
+												onPressed: () => setState(() => faecherList.removeFach(index)),
 											),
 										],
 									),
 									onTap: () {
 										Navigator.of(context).push(
 											CupertinoPageRoute(
-												builder: (context) => faecher[index]
+												builder: (context) => faecherList.faecher[index]
 											),
 										);
 									},
