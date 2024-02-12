@@ -246,32 +246,37 @@ class _StundenplanState extends State<Stundenplan> {
         child: Column(
           children: [
             CupertinoNavigationBar(
-              middle: const Text('Stundenplan'),
-              trailing: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              middle: Stack(
+                alignment: Alignment.center,
                 children: [
-                  _changeFachButton(),
-                  Tooltip(
-                    message: 'Fach hinzufügen',
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      child: const Icon(CupertinoIcons.add),
-                      onPressed: () {
-                        result() async {
-                          return await Navigator.of(context).push(
-                            CupertinoPageRoute(
-                                builder: (context) => const FachHinzufuegen()),
-                          );
-                        }
+                const Text('Stundenplan'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    _changeFachButton(),
+                    Tooltip(
+                      message: 'Fach hinzufügen',
+                      child: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        child: const Icon(CupertinoIcons.add),
+                        onPressed: () {
+                          result() async {
+                            return await Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                  builder: (context) =>
+                                      const FachHinzufuegen()),
+                            );
+                          }
 
-                        result().then((output) {
-                          setState(() => faecherList.addFach(output));
-                        });
-                      },
+                          result().then((output) {
+                            setState(() => faecherList.addFach(output));
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ]),
             ),
             Row(
               //main Row
