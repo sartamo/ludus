@@ -4,6 +4,7 @@
 import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:suppaapp/FaecherEinstellungen/hinzufuegen.dart';
 //import 'package:suppaapp/faecherliste.dart';
 import 'package:suppaapp/globals.dart';
@@ -174,6 +175,38 @@ class _StundenplanState extends State<Stundenplan> {
     }
   }
 
+  Widget _getTitle() {
+    if (_changingFach == -1) {
+      return const Text('Stundenplan');
+    } else {
+      TextPainter textPainter = TextPainter(
+        text: TextSpan(
+            text: faecherList.faecher[_changingFach].name,
+            style: DefaultTextStyle.of(context).style),
+        maxLines: 1,
+        textDirection: TextDirection.ltr,
+      );
+
+      textPainter.layout();
+
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('Drücke auf alle Stunden, in denen du '),
+          SizedBox(
+            width: textPainter.width + 16,
+            child: CupertinoTextField(
+              placeholder: faecherList.faecher[_changingFach].name,
+              onChanged: (newName) => faecherList.updateFach(_changingFach,
+                  Fach(newName, faecherList.faecher[_changingFach].zeiten)),
+            ),
+          ),
+          const Text(' hast.')
+        ],
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -246,10 +279,8 @@ class _StundenplanState extends State<Stundenplan> {
         child: Column(
           children: [
             CupertinoNavigationBar(
-              middle: Stack(
-                alignment: Alignment.center,
-                children: [
-                const Text('Stundenplan'),
+              middle: Stack(alignment: Alignment.center, children: [
+                _getTitle(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
