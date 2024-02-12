@@ -3,11 +3,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'dart:collection';
 import 'package:suppaapp/globals.dart';
 
 class Fach extends StatefulWidget {
   final String name;
-  final Map<int, Set<int>>
+  final SplayTreeMap<int, Set<int>>
       zeiten; // Die Zeiten des Fachs: Wochentag wird Stunde(n) zugeordnet
 
   const Fach(this.name, this.zeiten, {super.key});
@@ -80,17 +81,18 @@ class FaecherList extends ChangeNotifier {
     fromSave.forEach((fach, zeitenEncoded) {
       if (zeitenEncoded is String) {
         Map<String, dynamic> zeitenModified = jsonDecode(zeitenEncoded);
-        Map<int, Set<int>> zeiten = {};
+        SplayTreeMap<int, SplayTreeSet<int>> zeiten = SplayTreeMap();
         zeitenModified.forEach((key, value) {
-          if (value is List<int>) {
-            zeiten[int.parse(key)] = value.toSet();
+          if (value is List) {
+            zeiten[int.parse(key)] = SplayTreeSet.of(List.generate(value.length,
+                (index) => value[index] is int ? value[index] : 0));
           } else {
-            zeiten[int.parse(key)] = {};
+            zeiten[int.parse(key)] = SplayTreeSet();
           }
         });
         _faecher.add(Fach(fach, zeiten));
       } else {
-        _faecher.add(Fach(fach, const {}));
+        _faecher.add(Fach(fach, SplayTreeMap()));
       }
     });
   }

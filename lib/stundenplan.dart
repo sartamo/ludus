@@ -1,7 +1,7 @@
 // Seite für den Stundenplan
 
 //import 'dart:js_interop';
-//import 'dart:collection';
+import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:suppaapp/FaecherEinstellungen/hinzufuegen.dart';
@@ -58,7 +58,12 @@ class _StundenplanState extends State<Stundenplan> {
     if (_stundenplanA[d][h].isEmpty) {
       return CupertinoButton(
         padding: EdgeInsets.zero,
-        onPressed: _changingFach == -1 ? null : () => _clickButton(d: d, h: h, a: a), //if _changingFach == -1, onPressed is null, else onPressed is _clickButton
+        onPressed: _changingFach == -1
+            ? null
+            : () => _clickButton(
+                d: d,
+                h: h,
+                a: a), //if _changingFach == -1, onPressed is null, else onPressed is _clickButton
         color: _freeColor,
         disabledColor: _freeColor,
         pressedOpacity: 1.0,
@@ -97,8 +102,8 @@ class _StundenplanState extends State<Stundenplan> {
         }
       }
     } else {
-      Map<int, Set<int>> zeiten =
-          Map.from(faecherList.faecher[_changingFach].zeiten);
+      SplayTreeMap<int, Set<int>> zeiten =
+          SplayTreeMap.from(faecherList.faecher[_changingFach].zeiten);
       Fach currentFach = faecherList.faecher[_changingFach];
       if (zeiten[d]?.contains(h) ?? false) {
         Set<int> tempZeitenSet = Set.from(zeiten[d] ?? {});
