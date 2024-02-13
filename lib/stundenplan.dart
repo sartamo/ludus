@@ -40,7 +40,7 @@ class _StundenplanState extends State<Stundenplan> {
     for (int f = 0; f < faecherList.faecher.length; f++) {
       Fach myFach = faecherList.faecher[f];
       for (int w = 0; w < wochentage.length; w++) {
-        Set<int>? myZeiten = myFach.zeiten[w];
+        SplayTreeSet<int>? myZeiten = myFach.zeiten[w];
         if (myZeiten != null) {
           for (int s in myZeiten) {
             _stundenplanA[w][s].add(myFach.name);
@@ -103,20 +103,20 @@ class _StundenplanState extends State<Stundenplan> {
         }
       }
     } else {
-      SplayTreeMap<int, Set<int>> zeiten =
+      SplayTreeMap<int, SplayTreeSet<int>> zeiten =
           SplayTreeMap.from(faecherList.faecher[_changingFach].zeiten);
       Fach currentFach = faecherList.faecher[_changingFach];
       if (zeiten[d]?.contains(h) ?? false) {
-        Set<int> tempZeitenSet = Set.from(zeiten[d] ?? {});
+        SplayTreeSet<int> tempZeitenSet = SplayTreeSet.from(zeiten[d] ?? {});
         tempZeitenSet.remove(h);
         zeiten[d] = tempZeitenSet;
         faecherList.updateFach(_changingFach, Fach(currentFach.name, zeiten));
       } else {
         if (zeiten[d] == null) {
-          zeiten[d] = {h};
+          zeiten[d] = SplayTreeSet.from({h});
           faecherList.updateFach(_changingFach, Fach(currentFach.name, zeiten));
         } else {
-          Set<int> tempZeitenSet = Set.from(zeiten[d] ?? {});
+          SplayTreeSet<int> tempZeitenSet = SplayTreeSet.from(zeiten[d] ?? {});
           tempZeitenSet.add(h);
           zeiten[d] = tempZeitenSet;
           faecherList.updateFach(_changingFach, Fach(currentFach.name, zeiten));

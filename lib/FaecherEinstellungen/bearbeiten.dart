@@ -6,19 +6,21 @@ import 'package:suppaapp/faecher.dart';
 import 'package:suppaapp/globals.dart';
 import 'dart:collection';
 
-class FachHinzufuegen extends StatefulWidget {
-  const FachHinzufuegen({super.key});
+class FachBearbeiten extends StatefulWidget {
+  final Fach fach;
+
+  const FachBearbeiten(this.fach, {super.key});
 
   @override
-  State<FachHinzufuegen> createState() => _FachHinzufuegenState();
+  State<FachBearbeiten> createState() => _FachBearbeitenState();
 }
 
-class _FachHinzufuegenState extends State<FachHinzufuegen> {
+class _FachBearbeitenState extends State<FachBearbeiten> {
   int _selectedTag = 0;
   int _selectedStunde = 0;
-  String _selectedName = '';
-  final SplayTreeMap<int, SplayTreeSet<int>> _zeiten =
-      SplayTreeMap(); // SplayTreeMap: Automatische Sortierung
+  late String _selectedName = widget.fach.name;
+  late final SplayTreeMap<int, SplayTreeSet<int>> _zeiten =
+      widget.fach.zeiten; // SplayTreeMap: Automatische Sortierung
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +29,11 @@ class _FachHinzufuegenState extends State<FachHinzufuegen> {
         leading: CupertinoNavigationBarBackButton(
           onPressed: () => Navigator.of(context).pop(),
         ),
-        middle: Text('$_selectedName hinzufügen'),
+        middle: Text('$_zeiten bearbeiten'),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
           child: const Icon(CupertinoIcons.check_mark),
-          onPressed: () =>
-              Navigator.of(context).pop(Fach(_selectedName, _zeiten)),
+          onPressed: () => Navigator.of(context).pop((_selectedName, _zeiten)),
         ),
       ),
       child: SafeArea(
@@ -44,10 +45,11 @@ class _FachHinzufuegenState extends State<FachHinzufuegen> {
           crossAxisAlignment: CrossAxisAlignment.end,
           // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CupertinoTextField(
+            CupertinoTextFormFieldRow(
               autofocus: true,
               placeholder: 'Fächername',
-              onChanged: (value) => setState(() => _selectedName = value),
+              initialValue: _selectedName,
+              onChanged: (value) => _selectedName = value,
             ),
             CupertinoButton(
                 padding: const EdgeInsets.only(top: 20, bottom: 10),

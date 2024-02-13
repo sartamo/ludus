@@ -8,7 +8,7 @@ import 'package:suppaapp/globals.dart';
 
 class Fach extends StatefulWidget {
   final String name;
-  final SplayTreeMap<int, Set<int>>
+  final SplayTreeMap<int, SplayTreeSet<int>>
       zeiten; // Die Zeiten des Fachs: Wochentag wird Stunde(n) zugeordnet
 
   const Fach(this.name, this.zeiten, {super.key});
