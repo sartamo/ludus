@@ -2,7 +2,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:suppaapp/FaecherEinstellungen/auswahlfunktionen.dart';
-import 'package:suppaapp/faecher.dart';
 import 'package:suppaapp/globals.dart';
 import 'dart:collection';
 
@@ -27,12 +26,13 @@ class _FachHinzufuegenState extends State<FachHinzufuegen> {
         leading: CupertinoNavigationBarBackButton(
           onPressed: () => Navigator.of(context).pop(),
         ),
-        middle: Text('$_selectedName hinzufügen'),
+        middle: _selectedName == ''
+            ? const Text('Fach hinzufügen')
+            : Text('$_selectedName hinzufügen'),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
           child: const Icon(CupertinoIcons.check_mark),
-          onPressed: () =>
-              Navigator.of(context).pop(Fach(_selectedName, _zeiten)),
+          onPressed: () => Navigator.of(context).pop((_selectedName, _zeiten)),
         ),
       ),
       child: SafeArea(

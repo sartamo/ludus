@@ -6,21 +6,30 @@ import 'dart:convert';
 import 'dart:collection';
 import 'package:suppaapp/globals.dart';
 
-class Fach extends StatefulWidget {
-  final String name;
-  final SplayTreeMap<int, SplayTreeSet<int>>
-      zeiten; // Die Zeiten des Fachs: Wochentag wird Stunde(n) zugeordnet
+class FachData {
+  String name;
+  SplayTreeMap<int, SplayTreeSet<int>> zeiten;
 
-  const Fach(this.name, this.zeiten, {super.key});
+  FachData({required this.name, required this.zeiten});
+}
+
+class Fach extends StatefulWidget {
+  final FachData data;
+  const Fach(this.data, {super.key});
+
+  String get name =>
+      data.name; // Stateful Widget ist immutable, deswegen extra Klasse
+  SplayTreeMap<int, SplayTreeSet<int>> get zeiten => data.zeiten;
+
+  set name(String newName) => data.name = newName;
+  set zeiten(SplayTreeMap<int, SplayTreeSet<int>> newZeiten) =>
+      data.zeiten = newZeiten;
 
   @override
   State<Fach> createState() => _FachState();
 }
 
 class _FachState extends State<Fach> {
-  late List<Text> _display;
-  late String _name;
-
   List<Text> _getDisplay() {
     // Gibt den anzuzeigenden Text an _FachState
     List<Text> display = [
@@ -41,25 +50,18 @@ class _FachState extends State<Fach> {
   }
 
   @override
-  void initState() {
-    _display = _getDisplay();
-    _name = widget.name;
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         leading: CupertinoNavigationBarBackButton(
           onPressed: () => Navigator.pop(context),
         ),
-        middle: Text(_name),
+        middle: Text(widget.name),
       ),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: _display,
+          children: _getDisplay(),
         ),
       ),
     );
@@ -78,7 +80,7 @@ class FaecherList extends ChangeNotifier {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     Map<String, dynamic> fromSave =
         jsonDecode(preferences.getString('faecher') ?? '');
-    fromSave.forEach((fach, zeitenEncoded) {
+    fromSave.forEach((name, zeitenEncoded) {
       if (zeitenEncoded is String) {
         Map<String, dynamic> zeitenModified = jsonDecode(zeitenEncoded);
         SplayTreeMap<int, SplayTreeSet<int>> zeiten = SplayTreeMap();
@@ -90,9 +92,9 @@ class FaecherList extends ChangeNotifier {
             zeiten[int.parse(key)] = SplayTreeSet();
           }
         });
-        _faecher.add(Fach(fach, zeiten));
+        addFach(name: name, zeiten: zeiten);
       } else {
-        _faecher.add(Fach(fach, SplayTreeMap()));
+        addFach(name: name, zeiten: SplayTreeMap());
       }
     });
   }
@@ -114,16 +116,13 @@ class FaecherList extends ChangeNotifier {
             toSave)); // SharedPreferences nimmt nur Strings an, deswegen müssen wir zu json konvertieren
   }
 
-  /* final List<Fach> _faecher = [
-    const Fach('Mathematik', {0 : {3}, 2 : {0}, 4 : {5}}),
-    const Fach('Deutsch', {1 : {4, 5}, 4 : {0}}),
-    const Fach('Englisch', {2 : {3}, 3 : {5}, 4 : {3, 4}})
-  ]; */
-
   List<Fach> get faecher => _faecher;
 
-  void addFach(Fach fach) {
-    _faecher.add(fach);
+  void addFach(
+      {required String name,
+      required SplayTreeMap<int, SplayTreeSet<int>> zeiten}) {
+    Fach myFach = Fach(FachData(name: name, zeiten: zeiten));
+    _faecher.add(myFach);
     Future<void> result = _saveFaecher();
     result.whenComplete(() => notifyListeners());
   }
@@ -134,8 +133,16 @@ class FaecherList extends ChangeNotifier {
     result.whenComplete(() => notifyListeners());
   }
 
-  void updateFach(int index, Fach newFach) {
-    _faecher[index] = newFach;
+  void updateFach(
+      {required int index,
+      String? name,
+      SplayTreeMap<int, SplayTreeSet<int>>? zeiten}) {
+    if (zeiten != null) {
+      _faecher[index].zeiten = zeiten;
+    }
+    if (name != null) {
+      _faecher[index].name = name;
+    }
     _saveFaecher();
     notifyListeners();
   }

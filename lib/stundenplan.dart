@@ -4,7 +4,6 @@
 import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:suppaapp/FaecherEinstellungen/hinzufuegen.dart';
 //import 'package:suppaapp/faecherliste.dart';
 import 'package:suppaapp/globals.dart';
@@ -110,16 +109,18 @@ class _StundenplanState extends State<Stundenplan> {
         SplayTreeSet<int> tempZeitenSet = SplayTreeSet.from(zeiten[d] ?? {});
         tempZeitenSet.remove(h);
         zeiten[d] = tempZeitenSet;
-        faecherList.updateFach(_changingFach, Fach(currentFach.name, zeiten));
+        faecherList.updateFach(
+            index: _changingFach, name: currentFach.name, zeiten: zeiten);
       } else {
         if (zeiten[d] == null) {
           zeiten[d] = SplayTreeSet.from({h});
-          faecherList.updateFach(_changingFach, Fach(currentFach.name, zeiten));
-        } else {
+          faecherList.updateFach(
+              index: _changingFach, name: currentFach.name, zeiten: zeiten);
           SplayTreeSet<int> tempZeitenSet = SplayTreeSet.from(zeiten[d] ?? {});
           tempZeitenSet.add(h);
           zeiten[d] = tempZeitenSet;
-          faecherList.updateFach(_changingFach, Fach(currentFach.name, zeiten));
+          faecherList.updateFach(
+              index: _changingFach, name: currentFach.name, zeiten: zeiten);
         }
       }
     }
@@ -197,8 +198,10 @@ class _StundenplanState extends State<Stundenplan> {
             width: textPainter.width + 16,
             child: CupertinoTextField(
               placeholder: faecherList.faecher[_changingFach].name,
-              onChanged: (newName) => faecherList.updateFach(_changingFach,
-                  Fach(newName, faecherList.faecher[_changingFach].zeiten)),
+              onChanged: (newName) => faecherList.updateFach(
+                  index: _changingFach,
+                  name: newName,
+                  zeiten: faecherList.faecher[_changingFach].zeiten),
             ),
           ),
           const Text(' hast.')
@@ -288,22 +291,21 @@ class _StundenplanState extends State<Stundenplan> {
                     Tooltip(
                       message: 'Fach hinzufügen',
                       child: CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        child: const Icon(CupertinoIcons.add),
-                        onPressed: () {
-                          result() async {
-                            return await Navigator.of(context).push(
-                              CupertinoPageRoute(
-                                  builder: (context) =>
-                                      const FachHinzufuegen()),
-                            );
-                          }
-
-                          result().then((output) {
-                            setState(() => faecherList.addFach(output));
-                          });
-                        },
-                      ),
+                          padding: EdgeInsets.zero,
+                          child: const Icon(CupertinoIcons.add),
+                          onPressed: () async {
+                            (
+                              String,
+                              SplayTreeMap<int, SplayTreeSet<int>>
+                            )? result = await Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                    builder: (context) =>
+                                        const FachHinzufuegen()));
+                            if (result != null) {
+                              faecherList.addFach(
+                                  name: result.$1, zeiten: result.$2);
+                            }
+                          }),
                     ),
                   ],
                 ),

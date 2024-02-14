@@ -21,6 +21,19 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
   late String _selectedName = widget.fach.name;
   late final SplayTreeMap<int, SplayTreeSet<int>> _zeiten =
       widget.fach.zeiten; // SplayTreeMap: Automatische Sortierung
+  late final TextEditingController _textController;
+
+  @override
+  initState() {
+    _textController = TextEditingController(text: _selectedName);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +42,15 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
         leading: CupertinoNavigationBarBackButton(
           onPressed: () => Navigator.of(context).pop(),
         ),
-        middle: Text('$_zeiten bearbeiten'),
+        middle: _selectedName == ''
+            ? const Text('Fach bearbeiten')
+            : Text('$_selectedName bearbeiten'),
         trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
-          child: const Icon(CupertinoIcons.check_mark),
-          onPressed: () => Navigator.of(context).pop((_selectedName, _zeiten)),
-        ),
+            padding: EdgeInsets.zero,
+            child: const Icon(CupertinoIcons.check_mark),
+            onPressed: () {
+              Navigator.of(context).pop((_selectedName, _zeiten));
+            }),
       ),
       child: SafeArea(
         // Erstellt eine "Knauschzone" um die Ränder des Bildschirms
@@ -45,11 +61,11 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
           crossAxisAlignment: CrossAxisAlignment.end,
           // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CupertinoTextFormFieldRow(
+            CupertinoTextField(
               autofocus: true,
               placeholder: 'Fächername',
-              initialValue: _selectedName,
-              onChanged: (value) => _selectedName = value,
+              controller: _textController,
+              onChanged: (value) => setState(() => _selectedName = value),
             ),
             CupertinoButton(
                 padding: const EdgeInsets.only(top: 20, bottom: 10),
