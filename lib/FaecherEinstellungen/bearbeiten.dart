@@ -7,6 +7,7 @@ import 'package:suppaapp/globals.dart';
 import 'dart:collection';
 
 class FachBearbeiten extends StatefulWidget {
+  // Aufruf: FachBearbeiten(fach), Verarbeitung vom Ergebnis siehe faecherliste.dart
   final Fach fach;
 
   const FachBearbeiten(this.fach, {super.key});
@@ -26,6 +27,7 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
   @override
   initState() {
     _textController = TextEditingController(text: _selectedName);
+    // Damit das Eingabefeld einen initial Value hat (den ursprünglichen Namen)
     super.initState();
   }
 
@@ -40,6 +42,7 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         leading: CupertinoNavigationBarBackButton(
+          // Rückgabe null bei Abbruch
           onPressed: () => Navigator.of(context).pop(),
         ),
         middle: _selectedName == ''
@@ -49,6 +52,7 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
             padding: EdgeInsets.zero,
             child: const Icon(CupertinoIcons.check_mark),
             onPressed: () {
+              // Rückgabe von ausgewähltem Name und den Zeiten bei Bestätigung
               Navigator.of(context).pop((_selectedName, _zeiten));
             }),
       ),
@@ -59,12 +63,12 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
             vertical: MediaQuery.of(context).size.height * 0.07),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
-          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CupertinoTextField(
               autofocus: true,
               placeholder: 'Fächername',
-              controller: _textController,
+              controller:
+                  _textController, // Fächername steht am Anfang im Textfeld
               onChanged: (value) => setState(() => _selectedName = value),
             ),
             CupertinoButton(

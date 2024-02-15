@@ -7,6 +7,7 @@ import 'dart:collection';
 import 'package:suppaapp/globals.dart';
 
 class FachData {
+  // Speichert die Daten von einem Fach, siehe Klasse Fach
   String name;
   SplayTreeMap<int, SplayTreeSet<int>> zeiten;
 
@@ -14,6 +15,8 @@ class FachData {
 }
 
 class Fach extends StatefulWidget {
+  // Aufruf normalerweise über faecherList.addFach
+  // Hier: Fach(FachData(name: name, zeiten: zeiten))
   final FachData data;
   const Fach(this.data, {super.key});
 
@@ -119,6 +122,7 @@ class FaecherList extends ChangeNotifier {
   List<Fach> get faecher => _faecher;
 
   void addFach(
+      // Aufruf: faecherList.addFach(name: name, zeiten: zeiten)
       {required String name,
       required SplayTreeMap<int, SplayTreeSet<int>> zeiten}) {
     Fach myFach = Fach(FachData(name: name, zeiten: zeiten));
@@ -128,12 +132,15 @@ class FaecherList extends ChangeNotifier {
   }
 
   void removeFach(int index) {
+    // Aufruf: faecherList.removeFach(index)
     _faecher.remove(_faecher[index]);
     Future<void> result = _saveFaecher();
     result.whenComplete(() => notifyListeners());
   }
 
   void updateFach(
+      // Aufruf: faecherList.updateFach(index: index, name: name, zeiten: zeiten)
+      // name und zeiten können weggelassen werden
       {required int index,
       String? name,
       SplayTreeMap<int, SplayTreeSet<int>>? zeiten}) {
