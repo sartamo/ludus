@@ -3,7 +3,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:suppaapp/FaecherEinstellungen/hinzufuegen.dart';
 import 'package:suppaapp/FaecherEinstellungen/bearbeiten.dart';
-import 'package:suppaapp/faecher.dart';
+import 'package:suppaapp/Faecher/hauptseite.dart';
+import 'package:suppaapp/Faecher/management.dart';
 import 'package:suppaapp/globals.dart';
 import 'dart:collection';
 
@@ -48,7 +49,7 @@ class _FaecherlisteState extends State<Faecherliste> {
         await Navigator.of(context).push(
             CupertinoPageRoute(builder: (context) => const FachHinzufuegen()));
     if (result != null) {
-      faecherList.addFach(
+      faecher.addFach(
         name: result.$1,
         zeiten: result.$2,
       );
@@ -58,10 +59,10 @@ class _FaecherlisteState extends State<Faecherliste> {
   Future<void> _fachBearbeiten(int index) async {
     (String, SplayTreeMap<int, SplayTreeSet<int>>)? result =
         await Navigator.of(context).push(CupertinoPageRoute(
-            builder: (context) => FachBearbeiten(faecherList.faecher[index])));
+            builder: (context) => FachBearbeiten(faecher.faecher[index])));
     if (result != null) {
-      faecherList.updateFach(
-        index: faecherList.faecher.indexOf(faecherList.faecher[index]),
+      faecher.updateFach(
+        index: index,
         name: result.$1,
         zeiten: result.$2,
       );
@@ -72,7 +73,7 @@ class _FaecherlisteState extends State<Faecherliste> {
   void initState() {
     super.initState();
 
-    faecherList.addListener(() {
+    faecher.addListener(() {
       setState(() {});
     });
   }
@@ -93,16 +94,15 @@ class _FaecherlisteState extends State<Faecherliste> {
                 },
               ),
             ),
-            faecherList.faecher.isEmpty
+            faecher.faecher.isEmpty
                 ? const Center(
                     child: Text('Füge Fächer hinzu, damit sie hier erscheinen'))
                 : CupertinoListSection(
-                    children: List<Widget>.generate(faecherList.faecher.length,
-                        (index) {
+                    children:
+                        List<Widget>.generate(faecher.faecher.length, (index) {
                       return CupertinoListTile(
-                        title: Text(faecherList.faecher[index].name),
-                        subtitle:
-                            Text(_getSubtitle(faecherList.faecher[index])),
+                        title: Text(faecher.faecher[index].name),
+                        subtitle: Text(_getSubtitle(faecher.faecher[index])),
                         trailing: Row(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
@@ -114,14 +114,13 @@ class _FaecherlisteState extends State<Faecherliste> {
                               CupertinoButton(
                                 padding: EdgeInsets.zero,
                                 child: const Icon(CupertinoIcons.minus),
-                                onPressed: () => faecherList.removeFach(index),
+                                onPressed: () => faecher.removeFach(index),
                               ),
                             ]),
                         onTap: () {
                           Navigator.of(context).push(
                             CupertinoPageRoute(
-                                builder: (context) =>
-                                    faecherList.faecher[index]),
+                                builder: (context) => faecher.faecher[index]),
                           );
                         },
                       );

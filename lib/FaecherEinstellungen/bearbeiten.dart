@@ -2,7 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:suppaapp/FaecherEinstellungen/auswahlfunktionen.dart';
-import 'package:suppaapp/faecher.dart';
+import 'package:suppaapp/Faecher/hauptseite.dart';
 import 'package:suppaapp/globals.dart';
 import 'dart:collection';
 

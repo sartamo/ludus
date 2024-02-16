@@ -4,72 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:collection';
-import 'package:suppaapp/globals.dart';
-
-class FachData {
-  // Speichert die Daten von einem Fach, siehe Klasse Fach
-  String name;
-  SplayTreeMap<int, SplayTreeSet<int>> zeiten;
-
-  FachData({required this.name, required this.zeiten});
-}
-
-class Fach extends StatefulWidget {
-  // Aufruf normalerweise über faecherList.addFach
-  // Hier: Fach(FachData(name: name, zeiten: zeiten))
-  final FachData data;
-  const Fach(this.data, {super.key});
-
-  String get name =>
-      data.name; // Stateful Widget ist immutable, deswegen extra Klasse
-  SplayTreeMap<int, SplayTreeSet<int>> get zeiten => data.zeiten;
-
-  set name(String newName) => data.name = newName;
-  set zeiten(SplayTreeMap<int, SplayTreeSet<int>> newZeiten) =>
-      data.zeiten = newZeiten;
-
-  @override
-  State<Fach> createState() => _FachState();
-}
-
-class _FachState extends State<Fach> {
-  List<Text> _getDisplay() {
-    // Gibt den anzuzeigenden Text an _FachState
-    List<Text> display = [
-      Text('Willkommen im Fach ${widget.name}'),
-      const Text('Unterrichtszeiten:'),
-    ];
-
-    for (int w = 0; w < wochentage.length; w++) {
-      Set<int>? st = widget.zeiten[w];
-      if (st != null) {
-        for (int s in st) {
-          display.add(Text(
-              '${wochentage[w]}, ${stunden[s]}')); // Zeigt für jeden Wochentag w die dazugehörige Uhrzeit an.
-        }
-      }
-    }
-    return display;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        leading: CupertinoNavigationBarBackButton(
-          onPressed: () => Navigator.pop(context),
-        ),
-        middle: Text(widget.name),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: _getDisplay(),
-        ),
-      ),
-    );
-  }
-}
+import 'package:suppaapp/Faecher/hauptseite.dart';
 
 class FaecherList extends ChangeNotifier {
   final List<Fach> _faecher = [];
@@ -155,4 +90,4 @@ class FaecherList extends ChangeNotifier {
   }
 }
 
-final faecherList = FaecherList();
+final faecher = FaecherList();
