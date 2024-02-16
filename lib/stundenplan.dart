@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:suppaapp/FaecherEinstellungen/hinzufuegen.dart';
 //import 'package:suppaapp/faecherliste.dart';
 import 'package:suppaapp/globals.dart';
-import 'package:suppaapp/faecher.dart';
+import 'package:suppaapp/Faecher/management.dart';
+import 'package:suppaapp/Faecher/hauptseite.dart';
 
 class Stundenplan extends StatefulWidget {
   const Stundenplan({super.key});
@@ -36,8 +37,8 @@ class _StundenplanState extends State<Stundenplan> {
     //aktualisiert _stundenplanA an Hand von facher
     _stundenplanA = List.generate(
         wochentage.length, (_) => List.generate(stunden.length, (_) => []));
-    for (int f = 0; f < faecherList.faecher.length; f++) {
-      Fach myFach = faecherList.faecher[f];
+    for (int f = 0; f < faecher.faecher.length; f++) {
+      Fach myFach = faecher.faecher[f];
       for (int w = 0; w < wochentage.length; w++) {
         SplayTreeSet<int>? myZeiten = myFach.zeiten[w];
         if (myZeiten != null) {
@@ -91,38 +92,38 @@ class _StundenplanState extends State<Stundenplan> {
     if (_changingFach == -1) {
       int o = -1;
 
-      for (int f = 0; f < faecherList.faecher.length; f++) {
-        if (faecherList.faecher[f].zeiten[d]?.contains(h) ?? false) {
+      for (int f = 0; f < faecher.faecher.length; f++) {
+        if (faecher.faecher[f].zeiten[d]?.contains(h) ?? false) {
           o++;
           if (a == o) {
             Navigator.of(context).push(
-              CupertinoPageRoute(builder: (context) => faecherList.faecher[f]),
+              CupertinoPageRoute(builder: (context) => faecher.faecher[f]),
             );
           }
         }
       }
     } else {
       SplayTreeMap<int, SplayTreeSet<int>> zeiten =
-          SplayTreeMap.from(faecherList.faecher[_changingFach].zeiten);
-      Fach currentFach = faecherList.faecher[_changingFach];
+          SplayTreeMap.from(faecher.faecher[_changingFach].zeiten);
+      Fach currentFach = faecher.faecher[_changingFach];
       if (zeiten[d]?.contains(h) ?? false) {
         //Wenn das Fach bereits in der Stunde eingetragen ist, wird es entfernt
         SplayTreeSet<int> tempZeitenSet = SplayTreeSet.from(zeiten[d] ?? {});
         tempZeitenSet.remove(h);
         zeiten[d] = tempZeitenSet;
-        faecherList.updateFach(
+        faecher.updateFach(
             index: _changingFach, name: currentFach.name, zeiten: zeiten);
       } else {
         //Wenn das Fach noch nicht in der Stunde eingetragen ist, wird es hinzugefügt
         if (zeiten[d] == null) {
           zeiten[d] = SplayTreeSet.from({h});
-          faecherList.updateFach(
+          faecher.updateFach(
               index: _changingFach, name: currentFach.name, zeiten: zeiten);
         } else {
           SplayTreeSet<int> tempZeitenSet = SplayTreeSet.from(zeiten[d] ?? {});
           tempZeitenSet.add(h);
           zeiten[d] = tempZeitenSet;
-          faecherList.updateFach(
+          faecher.updateFach(
               index: _changingFach, name: currentFach.name, zeiten: zeiten);
         }
       }
@@ -143,7 +144,7 @@ class _StundenplanState extends State<Stundenplan> {
                         title: const Text('Fach auswählen'),
                         message: const Text(
                             'Wähle ein Fach aus und dücke dann im Stundenplan auf die Stunden, an denen du das gewählte Fach hizufügen oder entfernen möchtest.'),
-                        actions: List.generate(faecherList.faecher.length, (f) {
+                        actions: List.generate(faecher.faecher.length, (f) {
                           return CupertinoActionSheetAction(
                             onPressed: () {
                               setState(() {
@@ -151,7 +152,7 @@ class _StundenplanState extends State<Stundenplan> {
                                 Navigator.pop(context);
                               });
                             },
-                            child: Text(faecherList.faecher[f].name),
+                            child: Text(faecher.faecher[f].name),
                           );
                         }),
                         cancelButton: CupertinoActionSheetAction(
@@ -185,7 +186,7 @@ class _StundenplanState extends State<Stundenplan> {
     } else {
       TextPainter textPainter = TextPainter(
         text: TextSpan(
-            text: faecherList.faecher[_changingFach].name,
+            text: faecher.faecher[_changingFach].name,
             style: DefaultTextStyle.of(context).style),
         maxLines: 1,
         textDirection: TextDirection.ltr,
@@ -200,11 +201,11 @@ class _StundenplanState extends State<Stundenplan> {
           SizedBox(
             width: textPainter.width + 16,
             child: CupertinoTextField(
-              placeholder: faecherList.faecher[_changingFach].name,
-              onChanged: (newName) => faecherList.updateFach(
+              placeholder: faecher.faecher[_changingFach].name,
+              onChanged: (newName) => faecher.updateFach(
                   index: _changingFach,
                   name: newName,
-                  zeiten: faecherList.faecher[_changingFach].zeiten),
+                  zeiten: faecher.faecher[_changingFach].zeiten),
             ),
           ),
           const Text(' hast.')
@@ -216,7 +217,7 @@ class _StundenplanState extends State<Stundenplan> {
   @override
   void initState() {
     super.initState();
-    faecherList.addListener(() {
+    faecher.addListener(() {
       _aktualisiereStundenplan();
       setState(() {});
     });
@@ -305,7 +306,7 @@ class _StundenplanState extends State<Stundenplan> {
                                     builder: (context) =>
                                         const FachHinzufuegen()));
                             if (result != null) {
-                              faecherList.addFach(
+                              faecher.addFach(
                                   name: result.$1, zeiten: result.$2);
                             }
                           }),
