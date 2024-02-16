@@ -106,16 +106,19 @@ class _StundenplanState extends State<Stundenplan> {
           SplayTreeMap.from(faecherList.faecher[_changingFach].zeiten);
       Fach currentFach = faecherList.faecher[_changingFach];
       if (zeiten[d]?.contains(h) ?? false) {
+        //Wenn das Fach bereits in der Stunde eingetragen ist, wird es entfernt
         SplayTreeSet<int> tempZeitenSet = SplayTreeSet.from(zeiten[d] ?? {});
         tempZeitenSet.remove(h);
         zeiten[d] = tempZeitenSet;
         faecherList.updateFach(
             index: _changingFach, name: currentFach.name, zeiten: zeiten);
       } else {
+        //Wenn das Fach noch nicht in der Stunde eingetragen ist, wird es hinzugefügt
         if (zeiten[d] == null) {
           zeiten[d] = SplayTreeSet.from({h});
           faecherList.updateFach(
               index: _changingFach, name: currentFach.name, zeiten: zeiten);
+        } else {
           SplayTreeSet<int> tempZeitenSet = SplayTreeSet.from(zeiten[d] ?? {});
           tempZeitenSet.add(h);
           zeiten[d] = tempZeitenSet;
@@ -162,10 +165,10 @@ class _StundenplanState extends State<Stundenplan> {
       );
     } else {
       return Tooltip(
-        message: 'Abbrechen',
+        message: 'Speichern',
         child: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: const Icon(CupertinoIcons.clear),
+          child: const Icon(CupertinoIcons.checkmark),
           onPressed: () {
             setState(() {
               _changingFach = -1;
