@@ -32,6 +32,8 @@ migrate_working_dir/
 .pub/
 /build/
 /pubspec.lock
+*generated_plugin*
+*GeneratedPlugin*
 
 # Symbolication related
 app.*.symbols
