@@ -30,9 +30,9 @@ class FaecherList extends ChangeNotifier {
             zeiten[int.parse(key)] = SplayTreeSet();
           }
         });
-        addFach(name: name, zeiten: zeiten);
+        addFach(name: name, zeiten: zeiten, farbe: CupertinoColors.activeOrange);
       } else {
-        addFach(name: name, zeiten: SplayTreeMap());
+        addFach(name: name, zeiten: SplayTreeMap(), farbe: CupertinoColors.activeOrange);
       }
     });
   }
@@ -59,8 +59,9 @@ class FaecherList extends ChangeNotifier {
   void addFach(
       // Aufruf: faecherList.addFach(name: name, zeiten: zeiten)
       {required String name,
-      required SplayTreeMap<int, SplayTreeSet<int>> zeiten}) {
-    Fach myFach = Fach(FachData(name: name, zeiten: zeiten));
+      required SplayTreeMap<int, SplayTreeSet<int>> zeiten,
+      required Color farbe}) {
+    Fach myFach = Fach(FachData(name: name, zeiten: zeiten, farbe: farbe));
     _faecher.add(myFach);
     Future<void> result = _saveFaecher();
     result.whenComplete(() => notifyListeners());
@@ -78,12 +79,16 @@ class FaecherList extends ChangeNotifier {
       // name und zeiten können weggelassen werden
       {required int index,
       String? name,
-      SplayTreeMap<int, SplayTreeSet<int>>? zeiten}) {
+      SplayTreeMap<int, SplayTreeSet<int>>? zeiten,
+      Color? farbe,}) {
     if (zeiten != null) {
       _faecher[index].zeiten = zeiten;
     }
     if (name != null) {
       _faecher[index].name = name;
+    }
+    if (farbe != null) {
+      _faecher[index].farbe = farbe;
     }
     _saveFaecher();
     notifyListeners();

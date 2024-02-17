@@ -52,6 +52,7 @@ class _FaecherlisteState extends State<Faecherliste> {
       faecher.addFach(
         name: result.$1,
         zeiten: result.$2,
+        farbe: CupertinoColors.activeOrange,
       );
     }
   }

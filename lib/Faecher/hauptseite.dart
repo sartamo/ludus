@@ -10,8 +10,9 @@ class FachData {
   // Speichert die Daten von einem Fach, siehe Klasse Fach
   String name;
   SplayTreeMap<int, SplayTreeSet<int>> zeiten;
+  Color farbe;
 
-  FachData({required this.name, required this.zeiten});
+  FachData({required this.name, required this.zeiten, required this.farbe});
 }
 
 class Fach extends StatefulWidget {
@@ -23,10 +24,12 @@ class Fach extends StatefulWidget {
   String get name =>
       data.name; // Stateful Widget ist immutable, deswegen extra Klasse
   SplayTreeMap<int, SplayTreeSet<int>> get zeiten => data.zeiten;
+  Color get farbe => data.farbe;
 
   set name(String newName) => data.name = newName;
   set zeiten(SplayTreeMap<int, SplayTreeSet<int>> newZeiten) =>
       data.zeiten = newZeiten;
+  set farbe(Color newFarbe) => data.farbe = newFarbe;
 
   @override
   State<Fach> createState() => _FachState();

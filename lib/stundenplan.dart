@@ -1,6 +1,7 @@
 // Seite für den Stundenplan
 
 //import 'dart:js_interop';
+//import 'dart:async';
 import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +22,8 @@ class _StundenplanState extends State<Stundenplan> {
   final double _hoehe = 100; //höhe der Reihen
   final Color _firstColumnColor =
       CupertinoColors.systemGrey; //Farbe der ersten Spalte und Zeile
-  final Color _hourColor =
-      CupertinoColors.activeOrange; //Farbe der belegten Stunden
+  /*final Color _hourColor =
+      CupertinoColors.activeOrange; //Farbe der belegten Stunden*/
   final Color _freeColor =
       CupertinoColors.systemGrey2; //Farbe der freien Stunden
   int _changingFach =
@@ -76,8 +77,8 @@ class _StundenplanState extends State<Stundenplan> {
         onPressed: () {
           _clickButton(d: d, h: h, a: a);
         },
-        color: _hourColor,
-        disabledColor: _hourColor,
+        color: faecher.faecher[_getFachIndex(d: d, h: h, a: a)].farbe,
+        //disabledColor: _hourColor,
         pressedOpacity: 1.0,
         child: Text(_stundenplanA[d][h][a]),
       );
@@ -90,17 +91,11 @@ class _StundenplanState extends State<Stundenplan> {
     required int a,
   }) {
     if (_changingFach == -1) {
-      int o = -1;
-
-      for (int f = 0; f < faecher.faecher.length; f++) {
-        if (faecher.faecher[f].zeiten[d]?.contains(h) ?? false) {
-          o++;
-          if (a == o) {
-            Navigator.of(context).push(
-              CupertinoPageRoute(builder: (context) => faecher.faecher[f]),
-            );
-          }
-        }
+      int index = _getFachIndex(d: d, h: h, a: a);
+      if (index != -1) {
+        Navigator.of(context).push(
+          CupertinoPageRoute(builder: (context) => faecher.faecher[index]),
+        );
       }
     } else {
       SplayTreeMap<int, SplayTreeSet<int>> zeiten =
@@ -214,6 +209,19 @@ class _StundenplanState extends State<Stundenplan> {
     }
   }
 
+  int _getFachIndex({required int d, required int h, required int a}) {
+    int o = -1;
+    for (int f = 0; f < faecher.faecher.length; f++) {
+      if (faecher.faecher[f].zeiten[d]?.contains(h) ?? false) {
+        o++;
+        if (a == o) {
+          return f;
+        }
+      }
+    }
+    return -1;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -274,7 +282,7 @@ class _StundenplanState extends State<Stundenplan> {
                 ),
               );
             }
-          }).toList(),
+          })
         ],
       );
     }).toList();
@@ -307,7 +315,9 @@ class _StundenplanState extends State<Stundenplan> {
                                         const FachHinzufuegen()));
                             if (result != null) {
                               faecher.addFach(
-                                  name: result.$1, zeiten: result.$2);
+                                  name: result.$1,
+                                  zeiten: result.$2,
+                                  farbe: CupertinoColors.activeOrange);
                             }
                           }),
                     ),
@@ -349,7 +359,7 @@ class _StundenplanState extends State<Stundenplan> {
                           child: Text(stunde),
                         ),
                       );
-                    }).toList(),
+                    })
                   ],
                 ),
                 ...tage
