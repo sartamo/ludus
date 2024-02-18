@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:collection';
-import 'package:suppaapp/Faecher/hauptseite.dart';
+import 'package:suppaapp/Faecher/faecher.dart';
 
 class FaecherList extends ChangeNotifier {
   final List<Fach> _faecher = [];
@@ -57,11 +57,12 @@ class FaecherList extends ChangeNotifier {
   List<Fach> get faecher => _faecher;
 
   void addFach(
-      // Aufruf: faecherList.addFach(name: name, zeiten: zeiten)
+      // Aufruf: faecherList.addFach(name: name, zeiten: zeiten, notizen: notizen)
       {required String name,
       required SplayTreeMap<int, SplayTreeSet<int>> zeiten,
-      required Color farbe}) {
-    Fach myFach = Fach(FachData(name: name, zeiten: zeiten, farbe: farbe));
+      required Color farbe,
+      List<(String, String)> notizen = const []}) {
+    Fach myFach = Fach(FachData(name: name, zeiten: zeiten, farbe: farbe, notizen: notizen));
     _faecher.add(myFach);
     Future<void> result = _saveFaecher();
     result.whenComplete(() => notifyListeners());
@@ -75,12 +76,13 @@ class FaecherList extends ChangeNotifier {
   }
 
   void updateFach(
-      // Aufruf: faecherList.updateFach(index: index, name: name, zeiten: zeiten)
+      // Aufruf: faecherList.updateFach(index: index, name: name, zeiten: zeiten, notizen: notizen)
       // name und zeiten können weggelassen werden
       {required int index,
       String? name,
       SplayTreeMap<int, SplayTreeSet<int>>? zeiten,
-      Color? farbe,}) {
+      Color? farbe,
+      List<(String, String)>? notizen}) {
     if (zeiten != null) {
       _faecher[index].zeiten = zeiten;
     }
@@ -89,6 +91,9 @@ class FaecherList extends ChangeNotifier {
     }
     if (farbe != null) {
       _faecher[index].farbe = farbe;
+    }
+    if (notizen != null) {
+      _faecher[index].notizen = notizen;
     }
     _saveFaecher();
     notifyListeners();

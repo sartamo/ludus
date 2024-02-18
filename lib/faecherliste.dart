@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:suppaapp/FaecherEinstellungen/hinzufuegen.dart';
 import 'package:suppaapp/FaecherEinstellungen/bearbeiten.dart';
-import 'package:suppaapp/Faecher/hauptseite.dart';
+import 'package:suppaapp/Faecher/faecher.dart';
 import 'package:suppaapp/Faecher/management.dart';
 import 'package:suppaapp/globals.dart';
 import 'dart:collection';
