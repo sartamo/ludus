@@ -20,9 +20,9 @@ class _NotizHinzufuegenState extends State<NotizHinzufuegen> {
         leading: CupertinoNavigationBarBackButton(
           onPressed: () => Navigator.of(context).pop(),
         ),
-        middle: _selectedTitel != ''
-        ? Text('Neue Notiz: $_selectedTitel')
-        : const Text('Neue Notiz'),
+        middle: _selectedTitel == ''
+        ? const Text('Neue Notiz')
+        : Text('Neue Notiz: $_selectedTitel'),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
           child: const Icon(CupertinoIcons.check_mark),

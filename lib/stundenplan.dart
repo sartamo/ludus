@@ -232,6 +232,12 @@ class _StundenplanState extends State<Stundenplan> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    faecher.removeListener(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     _aktualisiereStundenplan();
 

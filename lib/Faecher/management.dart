@@ -60,7 +60,7 @@ class FaecherList extends ChangeNotifier {
       // Aufruf: faecherList.addFach(name: name, zeiten: zeiten, notizen: notizen)
       {required String name,
       required SplayTreeMap<int, SplayTreeSet<int>> zeiten,
-      required Color farbe,
+      Color farbe = CupertinoColors.activeOrange,
       List<(String, String)> notizen = const []}) {
     Fach myFach = Fach(FachData(name: name, zeiten: zeiten, farbe: farbe, notizen: notizen));
     _faecher.add(myFach);

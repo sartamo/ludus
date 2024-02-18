@@ -52,7 +52,6 @@ class _FaecherlisteState extends State<Faecherliste> {
       faecher.addFach(
         name: result.$1,
         zeiten: result.$2,
-        farbe: CupertinoColors.activeOrange,
       );
     }
   }
@@ -77,6 +76,12 @@ class _FaecherlisteState extends State<Faecherliste> {
     faecher.addListener(() {
       setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    faecher.removeListener(() {});
   }
 
   @override
