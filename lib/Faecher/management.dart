@@ -43,7 +43,7 @@ class FaecherList extends ChangeNotifier {
         updateFach(
           index: _faecher.indexWhere((element) => element.name == name),
           notizen: List.generate(notizen.length, (index) => 
-            notizen[index] is List && notizen[index][0] is String && notizen[index][0] is String
+            notizen[index] is List && notizen[index][0] is String && notizen[index][1] is String
             ? (notizen[index][0], notizen[index][1])
             : ('', '') // Safety Check: Wenn die Speicherdatei aus irgendeinem Grund nicht unser Format hat, übernehme leere Strings
             ));
