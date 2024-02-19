@@ -74,7 +74,9 @@ class _FaecherlisteState extends State<Faecherliste> {
     super.initState();
 
     faecher.addListener(() {
-      setState(() {});
+      if (mounted) { // Ruft setState nur auf, wenn das Widget angezeigt wird
+        setState(() {});
+      }
     });
   }
 
@@ -101,8 +103,14 @@ class _FaecherlisteState extends State<Faecherliste> {
               ),
             ),
             faecher.faecher.isEmpty
-                ? const Center(
-                    child: Text('Füge Fächer hinzu, damit sie hier erscheinen'))
+                ? const Column(
+                    children: <Widget>[
+                        SizedBox(
+                          height: 20,
+                          ),
+                        Text('Füge Fächer hinzu, damit sie hier erscheinen'),
+                    ],
+                )
                 : CupertinoListSection(
                     children:
                         List<Widget>.generate(faecher.faecher.length, (index) {

@@ -226,8 +226,9 @@ class _StundenplanState extends State<Stundenplan> {
   void initState() {
     super.initState();
     faecher.addListener(() {
-      _aktualisiereStundenplan();
-      setState(() {});
+      if (mounted) { // Ruft setState nur auf, wenn das Widget angezeigt wird
+        setState(() {});
+      }
     });
   }
 

@@ -66,7 +66,9 @@ class _FachState extends State<Fach> {
   void initState() {
     super.initState();
     faecher.addListener(() {
-      setState(() {});
+      if (mounted) { // Ruft setState nur auf, wenn das Widget angezeigt wird
+        setState(() {});
+      }
     });
   }
 
@@ -79,108 +81,143 @@ class _FachState extends State<Fach> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+      child: SingleChildScrollView(
         child: Column(
-      children: <Widget>[
-        CupertinoNavigationBar(
-          leading: CupertinoNavigationBarBackButton(
-            onPressed: () => Navigator.pop(context),
-          ),
-          middle: CupertinoSlidingSegmentedControl<Pages>(
-            groupValue: _selectedPage,
-            onValueChanged: (Pages? value) {
-              if (value != null) {
-                setState(() => _selectedPage = value);
-              }
-            },
-            children: const <Pages, Widget> {
-              Pages.unterrichtszeiten: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text('Unterrichtszeiten'),
+          children: <Widget>[
+            CupertinoNavigationBar(
+              leading: CupertinoNavigationBarBackButton(
+                onPressed: () => Navigator.pop(context),
               ),
-              Pages.notizen: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text('Notizen'),
-              ),
-              Pages.hausaufgaben: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text('Hausaufgaben'),
-              ),
-            },
-          ),
-          trailing: _selectedPage == Pages.unterrichtszeiten 
-            ? CupertinoButton( // Der Button für die Unterrichtszeiten
-              padding: EdgeInsets.zero,
-              child: const Icon(CupertinoIcons.settings),
-              onPressed: () async {
-                (String, SplayTreeMap<int, SplayTreeSet<int>>) result =
-                  await Navigator.of(context).push(CupertinoPageRoute(
-                    builder: ((context) => FachBearbeiten(widget))));
-                faecher.updateFach(
-                  index: faecher.faecher.indexOf(widget),
-                  name: result.$1,
-                  zeiten: result.$2,
-                );
-              },
-            )
-            : _selectedPage == Pages.notizen 
-              ? CupertinoButton( // Der Button für die Notizen
-                padding: EdgeInsets.zero,
-                child: const Icon(CupertinoIcons.add),
-                onPressed: () async {
-                  (String, String)? result = await Navigator.of(context).push(CupertinoPageRoute(
-                    builder: ((context) => const NotizHinzufuegen())
-                  ));
-                  if (result != null) {
-                    faecher.updateFach(
-                      index: faecher.faecher.indexOf(widget),
-                      notizen: widget.notizen + [result],
-                    );
+              middle: CupertinoSlidingSegmentedControl<Pages>(
+                groupValue: _selectedPage,
+                onValueChanged: (Pages? value) {
+                  if (value != null) {
+                    setState(() => _selectedPage = value);
                   }
                 },
-              )
-              : CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: const Icon(CupertinoIcons.add),
-                onPressed: () {},
+                children: const <Pages, Widget> {
+                  Pages.unterrichtszeiten: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('Unterrichtszeiten'),
+                  ),
+                  Pages.notizen: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('Notizen'),
+                  ),
+                  Pages.hausaufgaben: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('Hausaufgaben'),
+                  ),
+                },
               ),
-        ),
-        _selectedPage == Pages.unterrichtszeiten
-          ? CupertinoListSection( // Der Inhalt für die Unterrichtszeiten
-            children: List<Widget>.generate(
-              widget.zeiten.length,
-              (index) => CupertinoListTile(
-                title: Text(wochentage[widget.zeiten.keys.toList()[index]]),
-                subtitle: Text(_getSubtitleZeiten(index)),
-              ),
-            ),
-          )
-          : _selectedPage == Pages.notizen
-            ? widget.notizen.isEmpty // Der Inhalt für die Notizen
-              ? const Center(
-                child: Text('Füge Notizen hinzu, damit sie hier erscheinen'))
-              : CupertinoListSection(
-                header: Text(widget.name),
-                children: List<Widget>.generate(
-                  widget.notizen.length,
-                  (index) => CupertinoListTile(
-                    title: Text(widget.notizen[index].$1), // Titel der Notiz
-                    subtitle: Text(widget.notizen[index].$2), // Inhalt der Notiz
-                    onTap: () async {
+              trailing: _selectedPage == Pages.unterrichtszeiten 
+                ? CupertinoButton( // Der Button für die Unterrichtszeiten
+                  padding: EdgeInsets.zero,
+                  child: const Icon(CupertinoIcons.settings),
+                  onPressed: () async {
+                    (String, SplayTreeMap<int, SplayTreeSet<int>>)? result =
+                      await Navigator.of(context).push(CupertinoPageRoute(
+                        builder: ((context) => FachBearbeiten(widget))));
+                    if (result != null) {
+                      faecher.updateFach(
+                        index: faecher.faecher.indexOf(widget),
+                        name: result.$1,
+                        zeiten: result.$2,
+                      );
+                    }
+                  },
+                )
+                : _selectedPage == Pages.notizen 
+                  ? CupertinoButton( // Der Button für die Notizen
+                    padding: EdgeInsets.zero,
+                    child: const Icon(CupertinoIcons.add),
+                    onPressed: () async {
                       (String, String)? result = await Navigator.of(context).push(CupertinoPageRoute(
-                        builder: ((context) => NotizBearbeiten(widget.notizen[index]))
+                        builder: ((context) => const NotizHinzufuegen())
                       ));
                       if (result != null) {
-                        widget.notizen[index] = result;
                         faecher.updateFach(
                           index: faecher.faecher.indexOf(widget),
-                        ); // Kein Argument, aber weil wir das Fach ändern, soll trotzdem alles geupdatet werden
+                          notizen: widget.notizen + [result],
+                        );
                       }
                     },
+                  )
+                  : CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    child: const Icon(CupertinoIcons.add),
+                    onPressed: () {},
                   ),
+            ),
+            _selectedPage == Pages.unterrichtszeiten
+              ? widget.zeiten.isEmpty
+                ? Column(
+                  children: [
+                    const SizedBox(
+                        height: 20,
+                      ),
+                    Text('Unterrichtszeiten vom Fach ${widget.name} leer')
+                  ]
+                )
+                : CupertinoListSection( // Der Inhalt für die Unterrichtszeiten
+                  header: Text(widget.name), 
+                  children: List<Widget>.generate(
+                    widget.zeiten.length,
+                    (index) => CupertinoListTile(
+                      title: Text(wochentage[widget.zeiten.keys.toList()[index]]),
+                      subtitle: Text(_getSubtitleZeiten(index)),
+                    ),
+                  ),
+                )
+              : _selectedPage == Pages.notizen
+                ? widget.notizen.isEmpty // Der Inhalt für die Notizen
+                  ? Column(
+                    children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text('Notizen vom Fach ${widget.name} leer'),
+                    ])
+                  : CupertinoListSection(
+                    header: Text(widget.name),
+                    children: List<Widget>.generate(
+                      widget.notizen.length,
+                      (index) => CupertinoListTile(
+                        title: Text(widget.notizen[index].$1), // Titel der Notiz
+                        subtitle: Text(widget.notizen[index].$2), // Inhalt der Notiz
+                        trailing: CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          child: const Icon(CupertinoIcons.minus),
+                          onPressed: () => faecher.updateFach(
+                            index: faecher.faecher.indexOf(widget),
+                            notizen: widget.notizen..removeAt(index)
+                          ),
+                        ),
+                        onTap: () async {
+                          (String, String)? result = await Navigator.of(context).push(CupertinoPageRoute(
+                            builder: ((context) => NotizBearbeiten(widget.notizen[index]))
+                          ));
+                          if (result != null) {
+                            widget.notizen[index] = result;
+                            faecher.updateFach(
+                              index: faecher.faecher.indexOf(widget),
+                            ); // Kein Argument, aber weil wir das Fach ändern, soll trotzdem alles geupdatet werden
+                          }
+                        },
+                      ),
+                    ),
+                  )
+                : const Column(
+                  children: [
+                    SizedBox(
+                        height: 20,
+                      ),
+                    Text('Hier stehen mal die Hausaufgaben'),
+                  ],
                 ),
-              )
-            : const Text('Hier stehen mal die Hausaufgaben'),
-      ],
-    ));
+            ],
+        ),
+      ),
+    );
   }
 }

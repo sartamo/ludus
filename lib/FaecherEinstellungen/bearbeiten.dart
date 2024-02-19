@@ -56,58 +56,60 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
               Navigator.of(context).pop((_selectedName, _zeiten));
             }),
       ),
-      child: SafeArea(
-        // Erstellt eine "Knauschzone" um die Ränder des Bildschirms
-        minimum: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.1,
-            vertical: MediaQuery.of(context).size.height * 0.07),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            CupertinoTextField(
-              autofocus: true,
-              placeholder: 'Fächername',
-              controller:
-                  _textController, // Fächername steht am Anfang im Textfeld
-              onChanged: (value) => setState(() => _selectedName = value),
-            ),
-            CupertinoButton(
-                padding: const EdgeInsets.only(top: 20, bottom: 10),
-                child: const Text('Zeit hinzufügen'),
-                onPressed: () {
-                  Future<(int, int, bool)> result =
-                      zeitenAuswahl(context, _selectedTag, _selectedStunde);
-                  result.then((output) {
-                    if (output.$3) {
-                      setState(() {
-                        _zeiten[output.$1] =
-                            addZeit(_zeiten, output.$1, output.$2);
-                        _selectedTag = output.$1;
-                        _selectedStunde = output.$2;
-                      });
-                    }
-                  });
-                }),
-            ListView.builder(
-              itemExtent: 50,
-              shrinkWrap: true,
-              itemCount: _zeiten.length,
-              itemBuilder: (_, index) {
-                return Row(
-                  children: [
-                    Text(wochentage[_zeiten.keys.toList()[index]]),
-                    const Spacer(),
-                    Text(getSubtitles(_zeiten)[index]),
-                    CupertinoButton(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: const Icon(CupertinoIcons.minus),
-                        onPressed: () => setState(
-                            () => _zeiten.remove(_zeiten.keys.toList()[index])))
-                  ],
-                );
-              },
-            ),
-          ],
+      child: SingleChildScrollView(
+        child: SafeArea(
+          // Erstellt eine "Knauschzone" um die Ränder des Bildschirms
+          minimum: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.1,
+              vertical: MediaQuery.of(context).size.height * 0.07),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              CupertinoTextField(
+                autofocus: true,
+                placeholder: 'Fächername',
+                controller:
+                    _textController, // Fächername steht am Anfang im Textfeld
+                onChanged: (value) => setState(() => _selectedName = value),
+              ),
+              CupertinoButton(
+                  padding: const EdgeInsets.only(top: 20, bottom: 10),
+                  child: const Text('Zeit hinzufügen'),
+                  onPressed: () {
+                    Future<(int, int, bool)> result =
+                        zeitenAuswahl(context, _selectedTag, _selectedStunde);
+                    result.then((output) {
+                      if (output.$3) {
+                        setState(() {
+                          _zeiten[output.$1] =
+                              addZeit(_zeiten, output.$1, output.$2);
+                          _selectedTag = output.$1;
+                          _selectedStunde = output.$2;
+                        });
+                      }
+                    });
+                  }),
+              ListView.builder(
+                itemExtent: 50,
+                shrinkWrap: true,
+                itemCount: _zeiten.length,
+                itemBuilder: (_, index) {
+                  return Row(
+                    children: [
+                      Text(wochentage[_zeiten.keys.toList()[index]]),
+                      const Spacer(),
+                      Text(getSubtitles(_zeiten)[index]),
+                      CupertinoButton(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: const Icon(CupertinoIcons.minus),
+                          onPressed: () => setState(
+                              () => _zeiten.remove(_zeiten.keys.toList()[index])))
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

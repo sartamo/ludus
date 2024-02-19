@@ -16,16 +16,16 @@ class FaecherList extends ChangeNotifier {
 
   Future<void> _loadFaecher() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
-    Map<String, dynamic> fromSave =
-        jsonDecode(preferences.getString('faecher') ?? '');
-    fromSave.forEach((name, zeitenEncoded) {
+    Map<String, dynamic> fromSaveFaecher =
+      jsonDecode(preferences.getString('faecher') ?? '');
+    fromSaveFaecher.forEach((name, zeitenEncoded) {
       if (zeitenEncoded is String) {
         Map<String, dynamic> zeitenModified = jsonDecode(zeitenEncoded);
         SplayTreeMap<int, SplayTreeSet<int>> zeiten = SplayTreeMap();
         zeitenModified.forEach((key, value) {
           if (value is List) {
             zeiten[int.parse(key)] = SplayTreeSet.of(List.generate(value.length,
-                (index) => value[index] is int ? value[index] : 0));
+              (index) => value[index] is int ? value[index] : 0));
           } else {
             zeiten[int.parse(key)] = SplayTreeSet();
           }
@@ -35,23 +35,48 @@ class FaecherList extends ChangeNotifier {
         addFach(name: name, zeiten: SplayTreeMap(), farbe: CupertinoColors.activeOrange);
       }
     });
+
+    Map<String, dynamic> fromSaveNotizen =
+      jsonDecode(preferences.getString('notizen') ?? '');
+    fromSaveNotizen.forEach((name, notizen) {
+      if (notizen is List<dynamic>) {
+        updateFach(
+          index: _faecher.indexWhere((element) => element.name == name),
+          notizen: List.generate(notizen.length, (index) => 
+            notizen[index] is List && notizen[index][0] is String && notizen[index][0] is String
+            ? (notizen[index][0], notizen[index][1])
+            : ('', '') // Safety Check: Wenn die Speicherdatei aus irgendeinem Grund nicht unser Format hat, übernehme leere Strings
+            ));
+      }
+    });
   }
 
   Future<void> _saveFaecher() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
-    Map<String, String> toSave =
+    Map<String, String> toSaveZeiten =
         {}; // Namen werden json encodeten Zeiten zugeordnet
     for (Fach fach in _faecher) {
       Map<String, List<int>> zeitenModified =
           {}; // jsonEncode funktioniert nur, wenn die Keys Strings und die Values Listen sind
       fach.zeiten.forEach(
           (key, value) => zeitenModified[key.toString()] = value.toList());
-      toSave[fach.name] = jsonEncode(zeitenModified);
+      toSaveZeiten[fach.name] = jsonEncode(zeitenModified);
     }
     preferences.setString(
-        'faecher',
-        jsonEncode(
-            toSave)); // SharedPreferences nimmt nur Strings an, deswegen müssen wir zu json konvertieren
+      'faecher',
+      jsonEncode(
+        toSaveZeiten)); // SharedPreferences nimmt nur Strings an, deswegen müssen wir zu json konvertieren
+    
+    Map<String, List<List<String>>> toSaveNotizen = {}; // Format: {name: [[titel1, text1], [titel2, text2], ...]}
+    for (Fach fach in _faecher) {
+      toSaveNotizen[fach.name] = List<List<String>>.generate(
+        fach.notizen.length,
+        (index) => [fach.notizen[index].$1, fach.notizen[index].$2]);
+    }
+    preferences.setString(
+      'notizen',
+      jsonEncode(toSaveNotizen),
+    );
   }
 
   List<Fach> get faecher => _faecher;

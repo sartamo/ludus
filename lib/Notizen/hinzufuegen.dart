@@ -34,23 +34,25 @@ class _NotizHinzufuegenState extends State<NotizHinzufuegen> {
           horizontal: MediaQuery.of(context).size.width * 0.1,
           vertical: MediaQuery.of(context).size.height * 0.07
         ),
-        child: Column(
-          children: <Widget>[
-             CupertinoTextField(
-              autofocus: true,
-              placeholder: 'Titel',
-              onChanged: (value) => setState(() => _selectedTitel = value),
-             ),
-             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.015,
-             ),
-             CupertinoTextField(
-              placeholder: 'Notiz',
-              expands: true,
-              maxLines: null,
-              onChanged: (value) => _selectedContent = value,
-             )
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              CupertinoTextField(
+                autofocus: true,
+                placeholder: 'Titel',
+                onChanged: (value) => setState(() => _selectedTitel = value),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.015,
+              ),
+              CupertinoTextField(
+                placeholder: 'Notiz',
+                expands: true,
+                maxLines: null,
+                onChanged: (value) => _selectedContent = value,
+              )
+            ],
+          ),
         ),
       ),
     );
