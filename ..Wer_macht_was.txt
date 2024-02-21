@@ -1,0 +1,7 @@
+In Bearbeitung:
+Timo:       Stundenplan ändern in Fach hinzufügen/bearbeiten
+Jacop:      Impleimentierung der Notizen und so
+Floruian:   Hausaufgabenheft
+
+noch offen(opional):
+Taschenrechner, Formalsamlung
