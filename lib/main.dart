@@ -3,9 +3,9 @@ import 'package:suppaapp/hausaufgabenheft.dart';
 import 'package:suppaapp/faecherliste.dart';
 import 'package:suppaapp/stundenplan.dart';
 import 'package:suppaapp/einstellungen.dart';
+import 'package:suppaapp/notizen.dart';
 
 void main() => runApp(const Suppaapp());
-
 
 class Suppaapp extends StatelessWidget {
   const Suppaapp({super.key});
@@ -39,6 +39,10 @@ class Homepage extends StatelessWidget {
             label: 'Hausaufgabenheft',
           ),
           BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.pencil),
+            label: 'Notizheft'
+          ),
+          BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.table),
             label: 'Stundenplan'
           ),
@@ -51,23 +55,15 @@ class Homepage extends StatelessWidget {
       tabBuilder: (BuildContext context, int index) {
         return CupertinoTabView(
           builder: (BuildContext context) {
-            if(index==0){
-              return const Faecherliste();
-            }
-            else if(index==1){
-              return const Hausaufgabenheft();
-            }
-            else if (index==2){
-              return const Stundenplan();
-            }
-            else if (index==3){
-              return const Einstellungen();
-            }
-            else{
-              return const Center(
-                child: Text('Fehlerhafte Implementierung von Seitenwechsel'), // Wird normalerweise nicht angezeigt
-              );
-            }
+            return index == 0
+            ? const Faecherliste()
+            : index == 1
+            ? const Hausaufgabenheft()
+            : index == 2
+            ? const Notizen()
+            : index == 3
+            ? const Stundenplan()
+            : const Einstellungen();
           },
         );
       },
