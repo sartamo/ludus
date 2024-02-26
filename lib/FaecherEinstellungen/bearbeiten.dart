@@ -22,7 +22,7 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
   int _selectedStunde = 0;
   late String _selectedName = widget.fach.name;
   late final SplayTreeMap<int, SplayTreeSet<int>> _zeiten =
-      widget.fach.zeiten; // SplayTreeMap: Automatische Sortierung
+      SplayTreeMap<int, SplayTreeSet<int>>.from(widget.fach.zeiten); // SplayTreeMap: Automatische Sortierung
   late final TextEditingController _textController;
 
   @override
