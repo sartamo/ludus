@@ -55,44 +55,9 @@ class _FachHinzufuegenState extends State<FachHinzufuegen> {
               StundenplanBearbeiten(
                 zeiten: _zeiten,
                 name: _selectedName,
+                currentFachIndex: -1,
               ),
 
-              /*CupertinoButton(
-                  padding: const EdgeInsets.only(top: 20, bottom: 10),
-                  child: const Text('Zeit hinzufügen'),
-                  onPressed: () {
-                    Future<(int, int, bool)> result =
-                        zeitenAuswahl(context, _selectedTag, _selectedStunde);
-                    result.then((output) {
-                      if (output.$3) {
-                        setState(() {
-                          _zeiten[output.$1] =
-                              addZeit(_zeiten, output.$1, output.$2);
-                          _selectedTag = output.$1;
-                          _selectedStunde = output.$2;
-                        });
-                      }
-                    });
-                  }),
-              ListView.builder(
-                itemExtent: 50,
-                shrinkWrap: true,
-                itemCount: _zeiten.length,
-                itemBuilder: (_, index) {
-                  return Row(
-                    children: [
-                      Text(wochentage[_zeiten.keys.toList()[index]]),
-                      const Spacer(),
-                      Text(getSubtitles(_zeiten)[index]),
-                      CupertinoButton(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: const Icon(CupertinoIcons.minus),
-                          onPressed: () => setState(
-                              () => _zeiten.remove(_zeiten.keys.toList()[index])))
-                    ],
-                  );
-                },
-              ),*/
             ],
           ),
         ),

@@ -185,7 +185,7 @@ class _StundenplanState extends State<Stundenplan> {
 
   @override
   Widget build(BuildContext context) {
-    aktualisiereStundenplan();
+    aktualisiereStundenplanA();
 
     final double breite = MediaQuery.of(context).size.width /
         (wochentage.length + 1); //breite der Spalten
