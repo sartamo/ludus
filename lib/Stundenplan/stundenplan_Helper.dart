@@ -15,7 +15,7 @@ List<List<List<String>>> stundenplanA = List.generate(
     wochentage.length,
     (_) => List.generate(stunden.length, (_) => []));
 
-void aktualisiereStundenplan() {
+void aktualisiereStundenplanA() {
   //aktualisiert _stundenplanA an Hand von facher
   stundenplanA = List.generate(
       wochentage.length, (_) => List.generate(stunden.length, (_) => []));
