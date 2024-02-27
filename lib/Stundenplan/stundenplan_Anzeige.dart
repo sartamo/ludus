@@ -9,7 +9,8 @@ import 'package:suppaapp/FaecherEinstellungen/hinzufuegen.dart';
 //import 'package:suppaapp/faecherliste.dart';
 import 'package:suppaapp/globals.dart';
 import 'package:suppaapp/Faecher/management.dart';
-import 'package:suppaapp/Faecher/faecher.dart';
+//import 'package:suppaapp/Faecher/faecher.dart';
+import 'package:suppaapp/Stundenplan/stundenplan_Helper.dart';
 
 class Stundenplan extends StatefulWidget {
   const Stundenplan({super.key});
@@ -20,109 +21,65 @@ class Stundenplan extends StatefulWidget {
 
 class _StundenplanState extends State<Stundenplan> {
   final double _hoehe = 100; //höhe der Reihen
-  final Color _firstColumnColor =
-      CupertinoColors.systemGrey; //Farbe der ersten Spalte und Zeile
-  /*final Color _hourColor =
-      CupertinoColors.activeOrange; //Farbe der belegten Stunden*/
-  final Color _freeColor =
-      CupertinoColors.systemGrey2; //Farbe der freien Stunden
   int _changingFach =
       -1; //index des Fachs, von dem grade die Stunden geändert werden wenn -1 kein Fach wird geändert
 
-  List<List<List<String>>> _stundenplanA = List.generate(
-      //Äußere Liste: Wochentag, mittlere Liste: Stunde, innere Liste: Nammen der Fächer
-      wochentage.length,
-      (_) => List.generate(stunden.length, (_) => []));
-
-  void _aktualisiereStundenplan() {
-    //aktualisiert _stundenplanA an Hand von facher
-    _stundenplanA = List.generate(
-        wochentage.length, (_) => List.generate(stunden.length, (_) => []));
-    for (int f = 0; f < faecher.faecher.length; f++) {
-      Fach myFach = faecher.faecher[f];
-      for (int w = 0; w < wochentage.length; w++) {
-        SplayTreeSet<int>? myZeiten = myFach.zeiten[w];
-        if (myZeiten != null) {
-          for (int s in myZeiten) {
-            _stundenplanA[w][s].add(myFach.name);
-          }
-        }
-      }
-    }
-  }
-
-  CupertinoButton _getButton({
-    //gibt einen Button zurück
-    required int d,
-    required int h,
-    required int a,
-  }) {
-    if (_stundenplanA[d][h].isEmpty) {
-      return CupertinoButton(
-        padding: EdgeInsets.zero,
-        onPressed: _changingFach == -1
-            ? null
-            : () => _clickButton(
-                d: d,
-                h: h,
-                a: a), //if _changingFach == -1, onPressed is null, else onPressed is _clickButton
-        color: _freeColor,
-        disabledColor: _freeColor,
-        pressedOpacity: 1.0,
-        child: const Text('Frei'),
+  List<Widget> getTage(double breite) {
+    return List.generate((wochentage.length), (d) {
+      //Liste von wochentage.length Collumns it den jewailigen Stunden als CupertinoButton
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(
+            height: _hoehe,
+            width: breite,
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: null,
+              color: stundenplanFirstColumnColor,
+              disabledColor: stundenplanFirstColumnColor,
+              pressedOpacity: 1.0,
+              child: Text(wochentage[
+                  d]), // d is the index of the day; h is the index of the hour; a is the index of the subject (if there are multiple subjects in one hour)
+            ),
+          ),
+          ...List.generate(stunden.length, (h) {
+            if (stundenplanA[d][h].isEmpty) {
+              return SizedBox(
+                height: _hoehe,
+                width: breite,
+                child: getButton(
+                    context: context,
+                    changingFach: _changingFach,
+                    d: d,
+                    h: h,
+                    a: 0), //a isn't used here, but is required, if !_stundenplanA[d][h].isEmpty
+              );
+            } else {
+              return SizedBox(
+                height: _hoehe,
+                width: breite,
+                child: Row(
+                  children: List.generate(stundenplanA[d][h].length, (a) {
+                    return Expanded(
+                      child: SizedBox(
+                        height: _hoehe,
+                        child: getButton(
+                            context: context,
+                            changingFach: _changingFach,
+                            d: d,
+                            h: h,
+                            a: a),
+                      ),
+                    );
+                  }),
+                ),
+              );
+            }
+          })
+        ],
       );
-    } else {
-      return CupertinoButton(
-        padding: EdgeInsets.zero,
-        onPressed: () {
-          _clickButton(d: d, h: h, a: a);
-        },
-        color: faecher.faecher[_getFachIndex(d: d, h: h, a: a)].farbe,
-        //disabledColor: _hourColor,
-        pressedOpacity: 1.0,
-        child: Text(_stundenplanA[d][h][a]),
-      );
-    }
-  }
-
-  void _clickButton({
-    required int d,
-    required int h,
-    required int a,
-  }) {
-    if (_changingFach == -1) {
-      int index = _getFachIndex(d: d, h: h, a: a);
-      if (index != -1) {
-        Navigator.of(context).push(
-          CupertinoPageRoute(builder: (context) => faecher.faecher[index]),
-        );
-      }
-    } else {
-      SplayTreeMap<int, SplayTreeSet<int>> zeiten =
-          SplayTreeMap.from(faecher.faecher[_changingFach].zeiten);
-      Fach currentFach = faecher.faecher[_changingFach];
-      if (zeiten[d]?.contains(h) ?? false) {
-        //Wenn das Fach bereits in der Stunde eingetragen ist, wird es entfernt
-        SplayTreeSet<int> tempZeitenSet = SplayTreeSet.from(zeiten[d] ?? {});
-        tempZeitenSet.remove(h);
-        zeiten[d] = tempZeitenSet;
-        faecher.updateFach(
-            index: _changingFach, name: currentFach.name, zeiten: zeiten);
-      } else {
-        //Wenn das Fach noch nicht in der Stunde eingetragen ist, wird es hinzugefügt
-        if (zeiten[d] == null) {
-          zeiten[d] = SplayTreeSet.from({h});
-          faecher.updateFach(
-              index: _changingFach, name: currentFach.name, zeiten: zeiten);
-        } else {
-          SplayTreeSet<int> tempZeitenSet = SplayTreeSet.from(zeiten[d] ?? {});
-          tempZeitenSet.add(h);
-          zeiten[d] = tempZeitenSet;
-          faecher.updateFach(
-              index: _changingFach, name: currentFach.name, zeiten: zeiten);
-        }
-      }
-    }
+    }).toList();
   }
 
   Tooltip _changeFachButton() {
@@ -209,24 +166,12 @@ class _StundenplanState extends State<Stundenplan> {
     }
   }
 
-  int _getFachIndex({required int d, required int h, required int a}) {
-    int o = -1;
-    for (int f = 0; f < faecher.faecher.length; f++) {
-      if (faecher.faecher[f].zeiten[d]?.contains(h) ?? false) {
-        o++;
-        if (a == o) {
-          return f;
-        }
-      }
-    }
-    return -1;
-  }
-
   @override
   void initState() {
     super.initState();
     faecher.addListener(() {
-      if (mounted) { // Ruft setState nur auf, wenn das Widget angezeigt wird
+      if (mounted) {
+        // Ruft setState nur auf, wenn das Widget angezeigt wird
         setState(() {});
       }
     });
@@ -240,59 +185,12 @@ class _StundenplanState extends State<Stundenplan> {
 
   @override
   Widget build(BuildContext context) {
-    _aktualisiereStundenplan();
+    aktualisiereStundenplanA();
 
     final double breite = MediaQuery.of(context).size.width /
         (wochentage.length + 1); //breite der Spalten
 
-    List<Widget> tage = List.generate((wochentage.length), (d) {
-      //Liste von wochentage.length Collumns it den jewailigen Stunden als CupertinoButton
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(
-            height: _hoehe,
-            width: breite,
-            child: CupertinoButton(
-              padding: EdgeInsets.zero,
-              onPressed: null,
-              color: _firstColumnColor,
-              disabledColor: _firstColumnColor,
-              pressedOpacity: 1.0,
-              child: Text(wochentage[
-                  d]), // d is the index of the day; h is the index of the hour; a is the index of the subject (if there are multiple subjects in one hour)
-            ),
-          ),
-          ...List.generate(stunden.length, (h) {
-            if (_stundenplanA[d][h].isEmpty) {
-              return SizedBox(
-                height: _hoehe,
-                width: breite,
-                child: _getButton(
-                    d: d,
-                    h: h,
-                    a: 0), //a isn't used here, but is required, if !_stundenplanA[d][h].isEmpty
-              );
-            } else {
-              return SizedBox(
-                height: _hoehe,
-                width: breite,
-                child: Row(
-                  children: List.generate(_stundenplanA[d][h].length, (a) {
-                    return Expanded(
-                      child: SizedBox(
-                        height: _hoehe,
-                        child: _getButton(d: d, h: h, a: a),
-                      ),
-                    );
-                  }),
-                ),
-              );
-            }
-          })
-        ],
-      );
-    }).toList();
+    List<Widget> tage = getTage(breite);
 
     return Padding(
       //main Widget
@@ -344,13 +242,13 @@ class _StundenplanState extends State<Stundenplan> {
                     SizedBox(
                       height: _hoehe,
                       width: breite,
-                      child: CupertinoButton(
+                      child: const CupertinoButton(
                         padding: EdgeInsets.zero,
                         onPressed: null,
-                        color: _firstColumnColor,
-                        disabledColor: _firstColumnColor,
+                        color: stundenplanFirstColumnColor,
+                        disabledColor: stundenplanFirstColumnColor,
                         pressedOpacity: 1.0,
-                        child: const Text(''),
+                        child: Text(''),
                       ),
                     ),
                     ...stunden.map((stunde) {
@@ -360,8 +258,8 @@ class _StundenplanState extends State<Stundenplan> {
                         child: CupertinoButton(
                           padding: EdgeInsets.zero,
                           onPressed: null,
-                          color: _firstColumnColor,
-                          disabledColor: _firstColumnColor,
+                          color: stundenplanFirstColumnColor,
+                          disabledColor: stundenplanFirstColumnColor,
                           pressedOpacity: 1.0,
                           child: Text(stunde),
                         ),

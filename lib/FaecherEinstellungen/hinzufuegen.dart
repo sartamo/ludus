@@ -1,8 +1,9 @@
 // Seite, um ein Fach hinzuzufügen
 
 import 'package:flutter/cupertino.dart';
-import 'package:suppaapp/FaecherEinstellungen/auswahlfunktionen.dart';
-import 'package:suppaapp/globals.dart';
+//import 'package:suppaapp/FaecherEinstellungen/auswahlfunktionen.dart';
+//import 'package:suppaapp/globals.dart';
+import 'package:suppaapp/Stundenplan/stundenplan_Aenderung.dart';
 import 'dart:collection';
 
 class FachHinzufuegen extends StatefulWidget {
@@ -39,8 +40,9 @@ class _FachHinzufuegenState extends State<FachHinzufuegen> {
         child: SafeArea(
           // Erstellt eine "Knauschzone" um die Ränder des Bildschirms
           minimum: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.1,
-            vertical: MediaQuery.of(context).size.height * 0.07),
+              horizontal: MediaQuery.of(context).size.width *
+                  0.1, //Bei Änderung von horizontal auch in stundenplan_Aenderung.dart bei der Definition von breite ändern (die 0.1 aus:(1-0.1*2)) (Momentan Zeile 31, kann sich aber ändern)
+              vertical: MediaQuery.of(context).size.height * 0.07),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             // mainAxisAlignment: MainAxisAlignment.center,
@@ -50,42 +52,12 @@ class _FachHinzufuegenState extends State<FachHinzufuegen> {
                 placeholder: 'Fächername',
                 onChanged: (value) => setState(() => _selectedName = value),
               ),
-              CupertinoButton(
-                  padding: const EdgeInsets.only(top: 20, bottom: 10),
-                  child: const Text('Zeit hinzufügen'),
-                  onPressed: () {
-                    Future<(int, int, bool)> result =
-                        zeitenAuswahl(context, _selectedTag, _selectedStunde);
-                    result.then((output) {
-                      if (output.$3) {
-                        setState(() {
-                          _zeiten[output.$1] =
-                              addZeit(_zeiten, output.$1, output.$2);
-                          _selectedTag = output.$1;
-                          _selectedStunde = output.$2;
-                        });
-                      }
-                    });
-                  }),
-              ListView.builder(
-                itemExtent: 50,
-                shrinkWrap: true,
-                itemCount: _zeiten.length,
-                itemBuilder: (_, index) {
-                  return Row(
-                    children: [
-                      Text(wochentage[_zeiten.keys.toList()[index]]),
-                      const Spacer(),
-                      Text(getSubtitles(_zeiten)[index]),
-                      CupertinoButton(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: const Icon(CupertinoIcons.minus),
-                          onPressed: () => setState(
-                              () => _zeiten.remove(_zeiten.keys.toList()[index])))
-                    ],
-                  );
-                },
+              StundenplanBearbeiten(
+                zeiten: _zeiten,
+                name: _selectedName,
+                currentFachIndex: -1,
               ),
+
             ],
           ),
         ),

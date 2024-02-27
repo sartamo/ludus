@@ -1,9 +1,11 @@
 // Seite, um ein Fach hinzuzufügen
 
 import 'package:flutter/cupertino.dart';
-import 'package:suppaapp/FaecherEinstellungen/auswahlfunktionen.dart';
+//import 'package:suppaapp/FaecherEinstellungen/auswahlfunktionen.dart';
 import 'package:suppaapp/Faecher/faecher.dart';
-import 'package:suppaapp/globals.dart';
+import 'package:suppaapp/Faecher/management.dart';
+//import 'package:suppaapp/globals.dart';
+import 'package:suppaapp/Stundenplan/stundenplan_Aenderung.dart';
 import 'dart:collection';
 
 class FachBearbeiten extends StatefulWidget {
@@ -21,7 +23,7 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
   int _selectedStunde = 0;
   late String _selectedName = widget.fach.name;
   late final SplayTreeMap<int, SplayTreeSet<int>> _zeiten =
-      widget.fach.zeiten; // SplayTreeMap: Automatische Sortierung
+      SplayTreeMap<int, SplayTreeSet<int>>.from(widget.fach.zeiten); // SplayTreeMap: Automatische Sortierung
   late final TextEditingController _textController;
 
   @override
@@ -35,6 +37,18 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
   void dispose() {
     _textController.dispose();
     super.dispose();
+  }
+
+  int _searchFach ()
+  {
+    for (int i = 0; i < faecher.faecher.length; i++)
+    {
+      if (faecher.faecher[i] == widget.fach)
+      {
+        return i;
+      }
+    }
+    return -1;
   }
 
   @override
@@ -60,7 +74,8 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
         child: SafeArea(
           // Erstellt eine "Knauschzone" um die Ränder des Bildschirms
           minimum: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.1,
+              horizontal: MediaQuery.of(context).size.width *
+                  0.1, //Bei Änderung von horizontal auch in stundenplan_Aenderung.dart bei der Definition von breite ändern (die 0.1 aus:(1-0.1*2)) (Momentan Zeile 31, kann sich aber ändern)
               vertical: MediaQuery.of(context).size.height * 0.07),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -72,42 +87,12 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
                     _textController, // Fächername steht am Anfang im Textfeld
                 onChanged: (value) => setState(() => _selectedName = value),
               ),
-              CupertinoButton(
-                  padding: const EdgeInsets.only(top: 20, bottom: 10),
-                  child: const Text('Zeit hinzufügen'),
-                  onPressed: () {
-                    Future<(int, int, bool)> result =
-                        zeitenAuswahl(context, _selectedTag, _selectedStunde);
-                    result.then((output) {
-                      if (output.$3) {
-                        setState(() {
-                          _zeiten[output.$1] =
-                              addZeit(_zeiten, output.$1, output.$2);
-                          _selectedTag = output.$1;
-                          _selectedStunde = output.$2;
-                        });
-                      }
-                    });
-                  }),
-              ListView.builder(
-                itemExtent: 50,
-                shrinkWrap: true,
-                itemCount: _zeiten.length,
-                itemBuilder: (_, index) {
-                  return Row(
-                    children: [
-                      Text(wochentage[_zeiten.keys.toList()[index]]),
-                      const Spacer(),
-                      Text(getSubtitles(_zeiten)[index]),
-                      CupertinoButton(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: const Icon(CupertinoIcons.minus),
-                          onPressed: () => setState(
-                              () => _zeiten.remove(_zeiten.keys.toList()[index])))
-                    ],
-                  );
-                },
+              StundenplanBearbeiten(
+                zeiten: _zeiten,
+                name: _selectedName,
+                currentFachIndex: _searchFach(),
               ),
+
             ],
           ),
         ),
