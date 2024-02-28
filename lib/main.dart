@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:suppaapp/hausaufgabenheft.dart';
 import 'package:suppaapp/faecherliste.dart';
-import 'package:suppaapp/Stundenplan/stundenplan_Anzeige.dart';
+import 'package:suppaapp/Stundenplan/anzeige.dart';
 import 'package:suppaapp/einstellungen.dart';
 import 'package:suppaapp/notizen.dart';
 

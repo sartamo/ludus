@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:suppaapp/Faecher/faecher.dart';
 import 'package:suppaapp/Faecher/management.dart';
 //import 'package:suppaapp/globals.dart';
-import 'package:suppaapp/Stundenplan/stundenplan_Aenderung.dart';
+import 'package:suppaapp/Stundenplan/aenderung.dart';
 import 'dart:collection';
 
 class FachBearbeiten extends StatefulWidget {
@@ -19,8 +19,6 @@ class FachBearbeiten extends StatefulWidget {
 }
 
 class _FachBearbeitenState extends State<FachBearbeiten> {
-  int _selectedTag = 0;
-  int _selectedStunde = 0;
   late String _selectedName = widget.fach.name;
   late final SplayTreeMap<int, SplayTreeSet<int>> _zeiten =
       SplayTreeMap<int, SplayTreeSet<int>>.from(widget.fach.zeiten); // SplayTreeMap: Automatische Sortierung

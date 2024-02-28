@@ -10,7 +10,7 @@ import 'package:suppaapp/FaecherEinstellungen/hinzufuegen.dart';
 import 'package:suppaapp/globals.dart';
 import 'package:suppaapp/Faecher/management.dart';
 //import 'package:suppaapp/Faecher/faecher.dart';
-import 'package:suppaapp/Stundenplan/stundenplan_Helper.dart';
+import 'package:suppaapp/Stundenplan/helper.dart';
 
 class Stundenplan extends StatefulWidget {
   const Stundenplan({super.key});

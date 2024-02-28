@@ -2,10 +2,10 @@ import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 //import 'package:flutter/services.dart';
 import 'package:suppaapp/Faecher/management.dart';
-import 'package:suppaapp/Stundenplan/stundenplan_Anzeige.dart';
+// import 'package:suppaapp/Stundenplan/anzeige.dart';
 //import 'package:suppaapp/FaecherEinstellungen/auswahlfunktionen.dart';
 import 'package:suppaapp/globals.dart';
-import 'package:suppaapp/Stundenplan/stundenplan_Helper.dart';
+import 'package:suppaapp/Stundenplan/helper.dart';
 
 class StundenplanBearbeiten extends StatefulWidget {
   const StundenplanBearbeiten(
