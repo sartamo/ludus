@@ -1,5 +1,5 @@
 In Bearbeitung:
-Timo:       Stundenplan ändern in Fach hinzufügen/bearbeiten
+Timo:       
 Jacop:      Impleimentierung der Notizen und so
 Floruian:   Hausaufgabenheft
 
