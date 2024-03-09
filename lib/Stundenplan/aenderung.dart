@@ -29,8 +29,6 @@ class _StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
   List<List<List<String>>> stundenplanB = [];
 
   void stundenplanBAktualisieren() {
-    aktualisiereStundenplanA();
-
     stundenplanB = List.generate(
         wochentage.length, (_) => List.generate(stunden.length, (_) => []));
     for (int f = 0; f < faecher.faecher.length; f++) {
@@ -39,7 +37,7 @@ class _StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
           SplayTreeSet<int>? myZeiten = faecher.faecher[f].zeiten[w];
           if (myZeiten != null) {
             for (int s in myZeiten) {
-              stundenplanA[w][s].add(faecher.faecher[f].name);
+              stundenplanB[w][s].add(faecher.faecher[f].name);
             }
           }
         }
