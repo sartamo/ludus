@@ -6,6 +6,7 @@ import 'package:suppaapp/FaecherEinstellungen/bearbeiten.dart';
 import 'package:suppaapp/Faecher/management.dart';
 import 'package:suppaapp/Notizen/hinzufuegen.dart';
 import 'package:suppaapp/Notizen/bearbeiten.dart';
+import 'package:suppaapp/hausaufgaben.dart';
 import 'package:suppaapp/globals.dart';
 
 enum Pages {unterrichtszeiten, notizen, hausaufgaben}
@@ -16,11 +17,13 @@ class FachData {
   SplayTreeMap<int, SplayTreeSet<int>> zeiten;
   Color farbe;
   List<(String, String)> notizen; // (titel, inhalt)
+  List<Hausaufgabe> hausaufgaben; // (name, Datum)
 
   FachData({required this.name, 
       required this.zeiten, 
       required this.farbe,
-      required this.notizen
+      required this.notizen,
+      required this.hausaufgaben,
   });
 }
 
@@ -35,12 +38,14 @@ class Fach extends StatefulWidget {
   SplayTreeMap<int, SplayTreeSet<int>> get zeiten => data.zeiten;
   Color get farbe => data.farbe;
   List<(String, String)> get notizen => data.notizen;
+  List<Hausaufgabe> get hausaufgaben => data.hausaufgaben;
 
   set name(String newName) => data.name = newName;
   set zeiten(SplayTreeMap<int, SplayTreeSet<int>> newZeiten) =>
       data.zeiten = newZeiten;
   set farbe(Color newFarbe) => data.farbe = newFarbe;
   set notizen(List<(String, String)> newNotizen) => data.notizen = newNotizen;
+  set hausaufgaben(List<Hausaufgabe> newHausaufgaben) => data.hausaufgaben = newHausaufgaben;
 
   @override
   State<Fach> createState() => _FachState();

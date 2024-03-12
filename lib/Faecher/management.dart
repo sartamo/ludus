@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:collection';
 import 'package:suppaapp/Faecher/faecher.dart';
+import 'package:suppaapp/hausaufgaben.dart';
 
 class FaecherList extends ChangeNotifier {
   List<Fach> _faecher = [];
@@ -153,8 +154,9 @@ class FaecherList extends ChangeNotifier {
       {required String name,
       required SplayTreeMap<int, SplayTreeSet<int>> zeiten,
       Color farbe = CupertinoColors.activeOrange,
-      List<(String, String)> notizen = const []}) {
-    Fach myFach = Fach(FachData(name: name, zeiten: zeiten, farbe: farbe, notizen: notizen));
+      List<(String, String)> notizen = const [],
+      List<Hausaufgabe> hausaufgaben = const []}) {
+    Fach myFach = Fach(FachData(name: name, zeiten: zeiten, farbe: farbe, notizen: notizen, hausaufgaben: hausaufgaben));
     _faecher.add(myFach);
     Future<void> result = _saveFaecher();
     result.whenComplete(() => notifyListeners());
@@ -174,7 +176,8 @@ class FaecherList extends ChangeNotifier {
       String? name,
       SplayTreeMap<int, SplayTreeSet<int>>? zeiten,
       Color? farbe,
-      List<(String, String)>? notizen}) {
+      List<(String, String)>? notizen,
+      List<Hausaufgabe>? hausaufgaben}) {
     if (zeiten != null) {
       _faecher[index].zeiten = zeiten;
     }
@@ -186,6 +189,9 @@ class FaecherList extends ChangeNotifier {
     }
     if (notizen != null) {
       _faecher[index].notizen = notizen;
+    }
+    if (hausaufgaben != null) {
+      _faecher[index].hausaufgaben = hausaufgaben;
     }
     _saveFaecher();
     notifyListeners();
