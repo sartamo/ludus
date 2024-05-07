@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 //import 'package:flutter/services.dart';
-import 'package:suppaapp/FaecherEinstellungen/farbslider.dart';
+import 'package:suppaapp/FaecherEinstellungen/farb_slider.dart';
 import 'package:suppaapp/Faecher/management.dart';
 // import 'package:suppaapp/Stundenplan/anzeige.dart';
 //import 'package:suppaapp/FaecherEinstellungen/auswahlfunktionen.dart';
@@ -26,10 +26,10 @@ class StundenplanBearbeiten extends StatefulWidget {
   final double _hoehe = 100; //höhe der Reihen
 
   @override
-  _StundenplanBearbeitenState createState() => _StundenplanBearbeitenState();
+  StundenplanBearbeitenState createState() => StundenplanBearbeitenState();
 }
 
-class _StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
+class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
   double breite = 0.0;
   List<List<List<String>>> stundenplanB = [];
 

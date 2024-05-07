@@ -8,10 +8,10 @@ class FarbSlider extends StatefulWidget {
       {super.key, required this.farbe, required this.colorNotifier});
 
   @override
-  _FarbSliderState createState() => _FarbSliderState();
+  FarbSliderState createState() => FarbSliderState();
 }
 
-class _FarbSliderState extends State<FarbSlider> {
+class FarbSliderState extends State<FarbSlider> {
   final double _colorTextFieldWidth = (TextPainter(
               text: const TextSpan(text: '255'),
               textDirection: TextDirection.ltr)
@@ -55,25 +55,28 @@ class _FarbSliderState extends State<FarbSlider> {
                 maxLength: 3,
                 textAlign: TextAlign.center,
                 onChanged: (value) {
-                  try {
-                    setState(() {
-                      if (int.parse(value) <= 255) {
-                        if (int.parse(value) >= 0) {
-                          _colorRed = int.parse(value);
+                  if (value != '') {
+                    try {
+                      setState(() {
+                        if (int.parse(value) <= 255) {
+                          if (int.parse(value) >= 0) {
+                            _colorRed = int.parse(value);
+                          } else {
+                            _redController.text = '0';
+                            _colorRed = 0;
+                          }
                         } else {
-                          _redController.text = '0';
-                          _colorRed = 0;
+                          _redController.text = '255';
+                          _colorRed = 255;
                         }
-                      } else {
-                        _redController.text = '255';
-                        _colorRed = 255;
-                      }
-                      widget.farbe.farbe = Color.fromARGB(
-                          255, _colorRed, _colorGreen, _colorBlue);
-                      widget.colorNotifier.value = !widget.colorNotifier.value;
-                    });
-                  } catch (e) {
-                    _redController.text = _colorRed.toString();
+                        widget.farbe.farbe = Color.fromARGB(
+                            255, _colorRed, _colorGreen, _colorBlue);
+                        widget.colorNotifier.value =
+                            !widget.colorNotifier.value;
+                      });
+                    } catch (e) {
+                      _redController.text = _colorRed.toString();
+                    }
                   }
                 },
               ),
@@ -90,7 +93,8 @@ class _FarbSliderState extends State<FarbSlider> {
                         Color.fromARGB(255, _colorRed, _colorGreen, _colorBlue);
                   });
                 },
-                onChangeEnd: (value) => widget.colorNotifier.value = !widget.colorNotifier.value,
+                onChangeEnd: (value) =>
+                    widget.colorNotifier.value = !widget.colorNotifier.value,
                 min: 0,
                 max: 255,
                 thumbColor: widget.farbe.farbe,
@@ -113,25 +117,28 @@ class _FarbSliderState extends State<FarbSlider> {
                 maxLength: 3,
                 textAlign: TextAlign.center,
                 onChanged: (value) {
-                  try {
-                    setState(() {
-                      if (int.parse(value) <= 255) {
-                        if (int.parse(value) >= 0) {
-                          _colorGreen = int.parse(value);
+                  if (value != '') {
+                    try {
+                      setState(() {
+                        if (int.parse(value) <= 255) {
+                          if (int.parse(value) >= 0) {
+                            _colorGreen = int.parse(value);
+                          } else {
+                            _greenController.text = '0';
+                            _colorGreen = 0;
+                          }
                         } else {
-                          _greenController.text = '0';
-                          _colorGreen = 0;
+                          _greenController.text = '255';
+                          _colorGreen = 255;
                         }
-                      } else {
-                        _greenController.text = '255';
-                        _colorGreen = 255;
-                      }
-                      widget.farbe.farbe = Color.fromARGB(
-                          255, _colorRed, _colorGreen, _colorBlue);
-                      widget.colorNotifier.value = !widget.colorNotifier.value;
-                    });
-                  } catch (e) {
-                    _greenController.text = _colorGreen.toString();
+                        widget.farbe.farbe = Color.fromARGB(
+                            255, _colorRed, _colorGreen, _colorBlue);
+                        widget.colorNotifier.value =
+                            !widget.colorNotifier.value;
+                      });
+                    } catch (e) {
+                      _greenController.text = _colorGreen.toString();
+                    }
                   }
                 },
               ),
@@ -148,7 +155,8 @@ class _FarbSliderState extends State<FarbSlider> {
                         Color.fromARGB(255, _colorRed, _colorGreen, _colorBlue);
                   });
                 },
-                onChangeEnd: (value) => widget.colorNotifier.value = !widget.colorNotifier.value,
+                onChangeEnd: (value) =>
+                    widget.colorNotifier.value = !widget.colorNotifier.value,
                 min: 0,
                 max: 255,
                 thumbColor: widget.farbe.farbe,
@@ -171,25 +179,28 @@ class _FarbSliderState extends State<FarbSlider> {
                 maxLength: 3,
                 textAlign: TextAlign.center,
                 onChanged: (value) {
-                  try {
-                    setState(() {
-                      if (int.parse(value) <= 255) {
-                        if (int.parse(value) >= 0) {
-                          _colorBlue = int.parse(value);
+                  if (value != '') {
+                    try {
+                      setState(() {
+                        if (int.parse(value) <= 255) {
+                          if (int.parse(value) >= 0) {
+                            _colorBlue = int.parse(value);
+                          } else {
+                            _blueController.text = '0';
+                            _colorBlue = 0;
+                          }
                         } else {
-                          _blueController.text = '0';
-                          _colorBlue = 0;
+                          _blueController.text = '255';
+                          _colorBlue = 255;
+                          widget.farbe.farbe = Color.fromARGB(
+                              255, _colorRed, _colorGreen, _colorBlue);
+                          widget.colorNotifier.value =
+                              !widget.colorNotifier.value;
                         }
-                      } else {
-                        _blueController.text = '255';
-                        _colorBlue = 255;
-                        widget.farbe.farbe = Color.fromARGB(
-                            255, _colorRed, _colorGreen, _colorBlue);
-                        widget.colorNotifier.value = !widget.colorNotifier.value;
-                      }
-                    });
-                  } catch (e) {
-                    _blueController.text = _colorBlue.toString();
+                      });
+                    } catch (e) {
+                      _blueController.text = _colorBlue.toString();
+                    }
                   }
                 },
               ),
@@ -206,7 +217,8 @@ class _FarbSliderState extends State<FarbSlider> {
                         Color.fromARGB(255, _colorRed, _colorGreen, _colorBlue);
                   });
                 },
-                onChangeEnd: (value) => widget.colorNotifier.value = !widget.colorNotifier.value,
+                onChangeEnd: (value) =>
+                    widget.colorNotifier.value = !widget.colorNotifier.value,
                 min: 0,
                 max: 255,
                 thumbColor: widget.farbe.farbe,

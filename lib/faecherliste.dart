@@ -1,8 +1,8 @@
 // Die Seite für die Fächerliste
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+//import 'package:flutter/rendering.dart';
+//import 'package:flutter/widgets.dart';
 import 'package:suppaapp/FaecherEinstellungen/hinzufuegen.dart';
 import 'package:suppaapp/FaecherEinstellungen/bearbeiten.dart';
 import 'package:suppaapp/Faecher/faecher.dart';
