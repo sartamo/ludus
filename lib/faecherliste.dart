@@ -1,6 +1,8 @@
 // Die Seite für die Fächerliste
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:suppaapp/FaecherEinstellungen/hinzufuegen.dart';
 import 'package:suppaapp/FaecherEinstellungen/bearbeiten.dart';
 import 'package:suppaapp/Faecher/faecher.dart';
@@ -45,19 +47,20 @@ class _FaecherlisteState extends State<Faecherliste> {
   }
 
   Future<void> _fachHinzufuegen() async {
-    (String, SplayTreeMap<int, SplayTreeSet<int>>)? result =
+    (String, SplayTreeMap<int, SplayTreeSet<int>>, Color)? result =
         await Navigator.of(context).push(
             CupertinoPageRoute(builder: (context) => const FachHinzufuegen()));
     if (result != null) {
       faecher.addFach(
         name: result.$1,
         zeiten: result.$2,
+        farbe: result.$3,
       );
     }
   }
 
   Future<void> _fachBearbeiten(int index) async {
-    (String, SplayTreeMap<int, SplayTreeSet<int>>)? result =
+    (String, SplayTreeMap<int, SplayTreeSet<int>>, Color)? result =
         await Navigator.of(context).push(CupertinoPageRoute(
             builder: (context) => FachBearbeiten(faecher.faecher[index])));
     if (result != null) {
@@ -65,6 +68,7 @@ class _FaecherlisteState extends State<Faecherliste> {
         index: index,
         name: result.$1,
         zeiten: result.$2,
+        farbe: result.$3,
       );
     }
   }

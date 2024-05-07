@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 //import 'package:suppaapp/FaecherEinstellungen/auswahlfunktionen.dart';
 import 'package:suppaapp/Faecher/faecher.dart';
 import 'package:suppaapp/Faecher/management.dart';
+import 'package:suppaapp/FaecherEinstellungen/farbslider.dart';
 //import 'package:suppaapp/globals.dart';
 import 'package:suppaapp/Stundenplan/aenderung.dart';
 import 'dart:collection';
@@ -23,17 +24,9 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
   late final SplayTreeMap<int, SplayTreeSet<int>> _zeiten =
       SplayTreeMap<int, SplayTreeSet<int>>.from(widget.fach.zeiten); // SplayTreeMap: Automatische Sortierung
   late final TextEditingController _textController;
-  final double _colorTextFieldWidth = (TextPainter(
-              text: const TextSpan(text: '999'),
-              textDirection: TextDirection.ltr)
-            ..layout())
-          .width+16;
-  int _colorRed = 0;
-  int _colorGreen = 0;
-  int _colorBlue = 0;
-  final TextEditingController _redController = TextEditingController();
-  final TextEditingController _greenController = TextEditingController();
-  final TextEditingController _blueController = TextEditingController();
+  late final MutableFarbe _selectedFarbe = MutableFarbe(farbe: widget.fach.farbe);
+  final ValueNotifier<bool> _colorNotifier = ValueNotifier<bool>(false);
+  
 
   @override
   initState() {
@@ -48,12 +41,9 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
     super.dispose();
   }
 
-  int _searchFach ()
-  {
-    for (int i = 0; i < faecher.faecher.length; i++)
-    {
-      if (faecher.faecher[i] == widget.fach)
-      {
+  int _searchFach() {
+    for (int i = 0; i < faecher.faecher.length; i++) {
+      if (faecher.faecher[i] == widget.fach) {
         return i;
       }
     }
@@ -76,7 +66,7 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
             child: const Icon(CupertinoIcons.check_mark),
             onPressed: () {
               // Rückgabe von ausgewähltem Name und den Zeiten bei Bestätigung
-              Navigator.of(context).pop((_selectedName, _zeiten));
+              Navigator.of(context).pop((_selectedName, _zeiten, _selectedFarbe.farbe));
             }),
       ),
       child: SingleChildScrollView(
@@ -96,188 +86,15 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
                     _textController, // Fächername steht am Anfang im Textfeld
                 onChanged: (value) => setState(() => _selectedName = value),
               ),
-
               
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 50,
-                        child: Text('Rot:'),
-                      ),
-                      SizedBox(
-                        width: _colorTextFieldWidth,
-                        child: CupertinoTextField(
-                          controller: _redController,
-                          autocorrect: false,
-                          keyboardType: TextInputType.number,
-                          maxLength: 3,
-                          textAlign: TextAlign.center,
-                          onChanged: (value) {
-                            try {
-                              setState(() {
-                                if (int.parse(value) <= 255) {
-                                  if (int.parse(value) >= 0) {
-                                    _colorRed = int.parse(value);
-                                  }
-                                  else
-                                  {
-                                    _redController.text = '0';
-                                    _colorRed = 0;
-                                  }
-                                }
-                                else {
-                                  _redController.text = '255';
-                                  _colorRed = 255;
-                                }
-                              });
-                            }
-                            catch (e) {
-                              _redController.text = _colorRed.toString();
-                            }
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: CupertinoSlider(
-                          activeColor: CupertinoColors.systemRed,
-                          value: _colorRed.toDouble(),
-                          onChanged: (r) {
-                            setState(() {
-                              _colorRed = r.toInt();
-                              _redController.text = r.toInt().toString();
-                            });
-                          },
-                          min: 0,
-                          max: 255,
-                          thumbColor: Color.fromARGB(
-                              255, _colorRed, _colorGreen, _colorBlue),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 50,
-                        child: Text('Grün:'),
-                      ),
-                      SizedBox(
-                        width: _colorTextFieldWidth,
-                        child: CupertinoTextField(
-                          controller: _greenController,
-                          autocorrect: false,
-                          keyboardType: TextInputType.number,
-                          maxLength: 3,
-                          textAlign: TextAlign.center,
-                          onChanged: (value) {
-                            try {
-                              setState(() {
-                                if (int.parse(value) <= 255) {
-                                  if (int.parse(value) >= 0) {
-                                    _colorGreen = int.parse(value);
-                                  }
-                                  else
-                                  {
-                                    _greenController.text = '0';
-                                    _colorGreen = 0;
-                                  }
-                                }
-                                else {
-                                  _greenController.text = '255';
-                                  _colorGreen = 255;
-                                }
-                              });
-                            }
-                            catch (e) {
-                              _greenController.text = _colorGreen.toString();
-                            }
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: CupertinoSlider(
-                          activeColor: CupertinoColors.systemGreen,
-                          value: _colorGreen.toDouble(),
-                          onChanged: (r) {
-                            setState(() {
-                              _colorGreen = r.toInt();
-                              _greenController.text = r.toInt().toString();
-                            });
-                          },
-                          min: 0,
-                          max: 255,
-                          thumbColor: Color.fromARGB(
-                              255, _colorRed, _colorGreen, _colorBlue),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 50,
-                        child: Text('Blau:'),
-                      ),
-                      SizedBox(
-                        width: _colorTextFieldWidth,
-                        child: CupertinoTextField(
-                          controller: _blueController,
-                          autocorrect: false,
-                          keyboardType: TextInputType.number,
-                          maxLength: 3,
-                          textAlign: TextAlign.center,
-                          onChanged: (value) {
-                            try {
-                              setState(() {
-                                if (int.parse(value) <= 255) {
-                                  if (int.parse(value) >= 0) {
-                                    _colorBlue = int.parse(value);
-                                  }
-                                  else
-                                  {
-                                    _blueController.text = '0';
-                                    _colorBlue = 0;
-                                  }
-                                }
-                                else {
-                                  _blueController.text = '255';
-                                  _colorBlue = 255;
-                                }
-                              });
-                            }
-                            catch (e) {
-                              _blueController.text = _colorBlue.toString();
-                            }
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: CupertinoSlider(
-                          activeColor: CupertinoColors.systemBlue,
-                          value: _colorBlue.toDouble(),
-                          onChanged: (r) {
-                            setState(() {
-                              _colorBlue = r.toInt();
-                              _blueController.text = r.toInt().toString();
-                            });
-                          },
-                          min: 0,
-                          max: 255,
-                          thumbColor: Color.fromARGB(
-                              255, _colorRed, _colorGreen, _colorBlue),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              FarbSlider(farbe: _selectedFarbe, colorNotifier: _colorNotifier,),
 
               StundenplanBearbeiten(
                 zeiten: _zeiten,
                 name: _selectedName,
                 currentFachIndex: _searchFach(),
+                farbe: _selectedFarbe,
+                colorNotifier: _colorNotifier,
               ),
             ],
           ),
