@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 //import 'package:suppaapp/FaecherEinstellungen/auswahlfunktionen.dart';
 //import 'package:suppaapp/globals.dart';
-import 'package:suppaapp/FaecherEinstellungen/farbslider.dart';
+import 'package:suppaapp/FaecherEinstellungen/farb_slider.dart';
 import 'package:suppaapp/Stundenplan/aenderung.dart';
 import 'dart:collection';
 
