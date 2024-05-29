@@ -198,10 +198,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
       );
     }).toList();
 
-// *
-// *
-// *
-
+    //
     return Row(
       //main Row
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
