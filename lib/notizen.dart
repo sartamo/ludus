@@ -91,7 +91,7 @@ class _NotizenState extends State<Notizen> {
           ? const Column(
             children: <Widget> [
               SizedBox(height: 20),
-              Text('Du hast noch keine Notizen erstellt')
+              Center(child: Text('Du hast noch keine Notizen erstellt'))
             ]
           )
           : Column(

@@ -1,7 +1,6 @@
 // Seite, um eine Hausaufgabe hinzuzufügen
 
 import 'package:flutter/cupertino.dart';
-import 'package:suppaapp/hausaufgaben.dart';
 
 class HausaufgabeHinzufuegen extends StatefulWidget {
   const HausaufgabeHinzufuegen({super.key});
@@ -11,15 +10,13 @@ class HausaufgabeHinzufuegen extends StatefulWidget {
 }
 
 class _HausaufgabeHinzufuegenState extends State<HausaufgabeHinzufuegen> {
-  DateTime _datum = DateTime.now();
-  String _selectedName = '';
-  bool auswahl = false;
+  DateTime _datum = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  String _selectedName = '';  
   
-  
-String getSubtitlesDatum(DateTime datum) {
-  String subtitles = '${datum.day + 1}.${datum.month}.${datum.year}';
-  return subtitles;
-}
+  String getSubtitlesDatum(DateTime datum) {
+    String subtitles = '${datum.day}.${datum.month}.${datum.year}';
+    return subtitles;
+  }
 
   void _showDatePicker () { 
     showCupertinoModalPopup(
@@ -46,6 +43,8 @@ String getSubtitlesDatum(DateTime datum) {
                   dateOrder: DatePickerDateOrder.dmy,
                   mode: CupertinoDatePickerMode.date,
                   initialDateTime: _datum,
+                  minimumDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                  itemExtent: 50,
                   onDateTimeChanged: (DateTime newDateTime) {
                    _datum = newDateTime;
                    }
@@ -80,7 +79,7 @@ String getSubtitlesDatum(DateTime datum) {
           padding: EdgeInsets.zero,
           child: const Icon(CupertinoIcons.check_mark),
           onPressed: () =>
-              Navigator.of(context).pop(Hausaufgabe(_selectedName, _datum)),
+              Navigator.of(context).pop((_selectedName, _datum)),
         ),
       ),
       child: SafeArea(
@@ -90,7 +89,6 @@ String getSubtitlesDatum(DateTime datum) {
             vertical: MediaQuery.of(context).size.height * 0.07),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
-          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CupertinoTextField(
               autofocus: true,
@@ -101,27 +99,27 @@ String getSubtitlesDatum(DateTime datum) {
               mainAxisAlignment:MainAxisAlignment.spaceBetween,
               children:[
                 CupertinoButton(
-                    padding: const EdgeInsets.only(top: 20, bottom: 10),
-                    onPressed: _showDatePicker,
-                    child: const Text('Abgabezeit hinzufügen')                
-                    ),
+                  padding: const EdgeInsets.only(top: 20, bottom: 10),
+                  onPressed: _showDatePicker,
+                  child: const Text('Abgabezeit verändern')                
+                ),
               ]
             ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(getSubtitlesDatum(_datum)),
-                    CupertinoButton(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: const Text('reset'),
-                        onPressed: () {
-                          setState(() {
-                            _datum = DateTime.now();
-                       });
-                     },
-                    )
-                  ],
-                ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(getSubtitlesDatum(_datum)),
+                CupertinoButton(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: const Text('reset'),
+                  onPressed: () {
+                    setState(() {
+                      _datum = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+                    });
+                  },
+                )
+              ],
+            ),
           ],
         ),
       ),
