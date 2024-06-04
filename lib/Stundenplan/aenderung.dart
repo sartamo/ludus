@@ -23,7 +23,6 @@ class StundenplanBearbeiten extends StatefulWidget {
   final String name;
   final int currentFachIndex;
   final MutableFarbe farbe;
-  final double _hoehe = 1.3; //höhe der Reihen
 
   @override
   State<StundenplanBearbeiten> createState() => StundenplanBearbeitenState();
@@ -75,6 +74,9 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
     super.initState();
     stundenplanBAktualisieren();
 
+    stundenplanHoeheNotifier.addListener(() {
+      setState(() {});
+      });
     widget.colorNotifier.addListener(() {
       setState(() {});
     });
@@ -82,6 +84,9 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
 
   @override
   void dispose() {
+    stundenplanHoeheNotifier.removeListener(() {
+      setState(() {});
+    });
     widget.colorNotifier.removeListener(() {
       setState(() {});
     });
@@ -155,7 +160,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-            height: breite*widget._hoehe,
+            height: breite*stundenplanHoeheNotifier.value,
             width: breite,
             child: CupertinoButton(
               padding: const EdgeInsets.all(3),
@@ -170,7 +175,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
           ...List.generate(stunden.length, (h) {
             if (stundenplanB[d][h].isEmpty) {
               return SizedBox(
-                height: breite*widget._hoehe,
+                height: breite*stundenplanHoeheNotifier.value,
                 width: breite,
                 child: getAenderungsButton(
                     d: d,
@@ -179,13 +184,13 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
               );
             } else {
               return SizedBox(
-                height: breite*widget._hoehe,
+                height: breite*stundenplanHoeheNotifier.value,
                 width: breite,
                 child: Row(
                   children: List.generate(stundenplanB[d][h].length, (a) {
                     return Expanded(
                       child: SizedBox(
-                        height: breite*widget._hoehe,
+                        height: breite*stundenplanHoeheNotifier.value,
                         child: getAenderungsButton(d: d, h: h, a: a),
                       ),
                     );
@@ -209,7 +214,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
-              height: breite*widget._hoehe,
+              height: breite*stundenplanHoeheNotifier.value,
               width: breite,
               child: const CupertinoButton(
                 padding: EdgeInsets.all(3),
@@ -222,7 +227,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
             ),
             ...stunden.map((stunde) {
               return SizedBox(
-                height: breite*widget._hoehe,
+                height: breite*stundenplanHoeheNotifier.value,
                 width: breite,
                 child: CupertinoButton(
                   padding: const EdgeInsets.all(3),

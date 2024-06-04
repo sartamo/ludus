@@ -1,4 +1,5 @@
 // Hier kommen globale Variablen hin
+import 'package:flutter/material.dart';
 
 const List<String> wochentage = [
   'Montag',
@@ -23,3 +24,5 @@ const List<String> stunden = [
   '10. Stunde',
   '11. Stunde',
 ];
+
+final ValueNotifier<double> stundenplanHoeheNotifier = ValueNotifier<double>(1.3);

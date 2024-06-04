@@ -17,7 +17,6 @@ class Stundenplan extends StatefulWidget {
 }
 
 class _StundenplanState extends State<Stundenplan> {
-  final double _hoehe = 1.3; //höhe der Reihen im Vergleich zur Breite
 
   List<Column> getTage(double breite) {
     return List.generate((wochentage.length), (d) {
@@ -26,7 +25,7 @@ class _StundenplanState extends State<Stundenplan> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-            height: breite*_hoehe,
+            height: breite*stundenplanHoeheNotifier.value,
             width: breite,
             child: CupertinoButton(
               padding: const EdgeInsets.all(3),
@@ -41,7 +40,7 @@ class _StundenplanState extends State<Stundenplan> {
           ...List.generate(stunden.length, (h) {
             if (stundenplanA[d][h].isEmpty) {
               return SizedBox(
-                height: breite*_hoehe,
+                height: breite*stundenplanHoeheNotifier.value,
                 width: breite,
                 child: getButton(
                     context: context,
@@ -52,13 +51,13 @@ class _StundenplanState extends State<Stundenplan> {
               );
             } else {
               return SizedBox(
-                height: breite*_hoehe,
+                height: breite*stundenplanHoeheNotifier.value,
                 width: breite,
                 child: Row(
                   children: List.generate(stundenplanA[d][h].length, (a) {
                     return Expanded(
                       child: SizedBox(
-                        height: breite*_hoehe,
+                        height: breite*stundenplanHoeheNotifier.value,
                         child: getButton(
                             context: context,
                             changingFach: -1,
@@ -136,6 +135,9 @@ class _StundenplanState extends State<Stundenplan> {
   @override
   void initState() {
     super.initState();
+    stundenplanHoeheNotifier.addListener(() {
+      setState(() {});
+    });
     faecher.addListener(() {
       if (mounted) {
         // Ruft setState nur auf, wenn das Widget angezeigt wird
@@ -147,6 +149,7 @@ class _StundenplanState extends State<Stundenplan> {
   @override
   void dispose() {
     super.dispose();
+    stundenplanHoeheNotifier.removeListener(() {});
     faecher.removeListener(() {});
   }
 
@@ -206,7 +209,7 @@ class _StundenplanState extends State<Stundenplan> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: breite*_hoehe,
+                      height: breite*stundenplanHoeheNotifier.value,
                       width: breite,
                       child: const CupertinoButton(
                         padding: EdgeInsets.all(3),
@@ -219,7 +222,7 @@ class _StundenplanState extends State<Stundenplan> {
                     ),
                     ...stunden.map((stunde) {
                       return SizedBox(
-                        height: breite*_hoehe,
+                        height: breite*stundenplanHoeheNotifier.value,
                         width: breite,
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(3),
