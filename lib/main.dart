@@ -36,7 +36,7 @@ class Homepage extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.book),
-            label: 'Hausaufgabenheft',
+            label: 'Hausaufgaben',
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.pencil),
