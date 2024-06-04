@@ -29,7 +29,7 @@ class _StundenplanState extends State<Stundenplan> {
             height: breite*_hoehe,
             width: breite,
             child: CupertinoButton(
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsets.all(3),
               onPressed: null,
               color: stundenplanFirstColumnColor,
               disabledColor: stundenplanFirstColumnColor,
@@ -209,7 +209,7 @@ class _StundenplanState extends State<Stundenplan> {
                       height: breite*_hoehe,
                       width: breite,
                       child: const CupertinoButton(
-                        padding: EdgeInsets.zero,
+                        padding: EdgeInsets.all(3),
                         onPressed: null,
                         color: stundenplanFirstColumnColor,
                         disabledColor: stundenplanFirstColumnColor,
@@ -222,7 +222,7 @@ class _StundenplanState extends State<Stundenplan> {
                         height: breite*_hoehe,
                         width: breite,
                         child: CupertinoButton(
-                          padding: EdgeInsets.zero,
+                          padding: const EdgeInsets.all(3),
                           onPressed: null,
                           color: stundenplanFirstColumnColor,
                           disabledColor: stundenplanFirstColumnColor,

@@ -103,7 +103,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
     }) {
       if (stundenplanB[d][h].isEmpty) {
         return CupertinoButton(
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.all(3),
           onPressed: () {
             if (widget.zeiten.containsKey(d)) {
               if (widget.zeiten[d]!.contains(h)) {
@@ -124,7 +124,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
         );
       } else {
         return CupertinoButton(
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.all(3),
           onPressed: () {
             if (widget.zeiten.containsKey(d)) {
               if (widget.zeiten[d]!.contains(h)) {
@@ -158,7 +158,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
             height: breite*widget._hoehe,
             width: breite,
             child: CupertinoButton(
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsets.all(3),
               onPressed: null,
               color: stundenplanFirstColumnColor,
               disabledColor: stundenplanFirstColumnColor,
@@ -212,7 +212,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
               height: breite*widget._hoehe,
               width: breite,
               child: const CupertinoButton(
-                padding: EdgeInsets.zero,
+                padding: EdgeInsets.all(3),
                 onPressed: null,
                 color: stundenplanFirstColumnColor,
                 disabledColor: stundenplanFirstColumnColor,
@@ -225,7 +225,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
                 height: breite*widget._hoehe,
                 width: breite,
                 child: CupertinoButton(
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.all(3),
                   onPressed: null,
                   color: stundenplanFirstColumnColor,
                   disabledColor: stundenplanFirstColumnColor,
