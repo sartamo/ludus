@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 //import 'package:flutter/services.dart';
+import 'package:suppaapp/FaecherEinstellungen/farb_slider.dart';
 import 'package:suppaapp/Faecher/management.dart';
 // import 'package:suppaapp/Stundenplan/anzeige.dart';
 //import 'package:suppaapp/FaecherEinstellungen/auswahlfunktionen.dart';
@@ -8,29 +9,31 @@ import 'package:suppaapp/globals.dart';
 import 'package:suppaapp/Stundenplan/helper.dart';
 
 class StundenplanBearbeiten extends StatefulWidget {
-  const StundenplanBearbeiten(
-      {super.key,
-      required this.zeiten,
-      required this.name,
-      required this.currentFachIndex //Der Index des Faches, das bearbeitet wird, -1 wenn ein neues Fach hinzugefügt wird (wird nur für die Anzeige benötingt)
-      });
+  const StundenplanBearbeiten({
+    super.key,
+    required this.zeiten,
+    required this.name,
+    required this.currentFachIndex, //Der Index des Faches, das bearbeitet wird, -1 wenn ein neues Fach hinzugefügt wird (wird nur für die Anzeige benötingt)
+    required this.farbe,
+    required this.colorNotifier,
+  });
 
+  final ValueNotifier<bool> colorNotifier;
   final SplayTreeMap<int, SplayTreeSet<int>> zeiten;
   final String name;
   final int currentFachIndex;
+  final MutableFarbe farbe;
   final double _hoehe = 100; //höhe der Reihen
 
   @override
-  State<StundenplanBearbeiten> createState() => _StundenplanBearbeitenState();
+  State<StundenplanBearbeiten> createState() => StundenplanBearbeitenState();
 }
 
-class _StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
+class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
   double breite = 0.0;
   List<List<List<String>>> stundenplanB = [];
 
   void stundenplanBAktualisieren() {
-    aktualisiereStundenplanA();
-
     stundenplanB = List.generate(
         wochentage.length, (_) => List.generate(stunden.length, (_) => []));
     for (int f = 0; f < faecher.faecher.length; f++) {
@@ -39,7 +42,7 @@ class _StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
           SplayTreeSet<int>? myZeiten = faecher.faecher[f].zeiten[w];
           if (myZeiten != null) {
             for (int s in myZeiten) {
-              stundenplanA[w][s].add(faecher.faecher[f].name);
+              stundenplanB[w][s].add(faecher.faecher[f].name);
             }
           }
         }
@@ -65,6 +68,24 @@ class _StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
     }
 
     setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    stundenplanBAktualisieren();
+
+    widget.colorNotifier.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.colorNotifier.removeListener(() {
+      setState(() {});
+    });
+    super.dispose();
   }
 
   @override
@@ -118,8 +139,9 @@ class _StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
               stundenplanBAktualisieren();
             }
           },
-          color: getFachIndex(d: d, h: h, a: a) == -1
-              ? CupertinoColors.activeOrange
+          color: getFachIndex(d: d, h: h, a: a) == -1 ||
+                  getFachIndex(d: d, h: h, a: a) == widget.currentFachIndex
+              ? widget.farbe.farbe
               : faecher.faecher[getFachIndex(d: d, h: h, a: a)].farbe,
           pressedOpacity: 1.0,
           child: Text(stundenplanB[d][h][a]),
@@ -176,10 +198,7 @@ class _StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
       );
     }).toList();
 
-// *
-// *
-// *
-
+    //
     return Row(
       //main Row
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

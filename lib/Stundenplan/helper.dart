@@ -32,6 +32,7 @@ void aktualisiereStundenplanA() {
   }
 }
 
+//gibt einen Stunden-Button für den Stundenplan zurück
 CupertinoButton getButton({
   //gibt einen Button zurück
   required BuildContext context,
@@ -50,7 +51,7 @@ CupertinoButton getButton({
               changingFach: changingFach,
               d: d,
               h: h,
-              a: a), //if _changingFach == -1, onPressed is null, else onPressed is _clickButton
+              a: a), //if _changingFach == -1, onPressed is null, else onPressed is clickButton
       color: stundenplanFreeColor,
       disabledColor: stundenplanFreeColor,
       pressedOpacity: 1.0,
@@ -77,8 +78,9 @@ void clickButton({
   required int d,
   required int h,
   required int a,
+  SplayTreeMap<int, SplayTreeSet<int>>? zeiten,
 }) {
-  if (changingFach == -1) {
+  if (changingFach == -1 || zeiten == null) {
     int index = getFachIndex(d: d, h: h, a: a);
     if (index != -1) {
       Navigator.of(context).push(
@@ -86,16 +88,12 @@ void clickButton({
       );
     }
   } else {
-    SplayTreeMap<int, SplayTreeSet<int>> zeiten =
-        SplayTreeMap.from(faecher.faecher[changingFach].zeiten);
     Fach currentFach = faecher.faecher[changingFach];
     if (zeiten[d]?.contains(h) ?? false) {
       //Wenn das Fach bereits in der Stunde eingetragen ist, wird es entfernt
       SplayTreeSet<int> tempZeitenSet = SplayTreeSet.from(zeiten[d] ?? {});
       tempZeitenSet.remove(h);
       zeiten[d] = tempZeitenSet;
-      faecher.updateFach(
-          index: changingFach, name: currentFach.name, zeiten: zeiten);
     } else {
       //Wenn das Fach noch nicht in der Stunde eingetragen ist, wird es hinzugefügt
       if (zeiten[d] == null) {
@@ -106,8 +104,6 @@ void clickButton({
         SplayTreeSet<int> tempZeitenSet = SplayTreeSet.from(zeiten[d] ?? {});
         tempZeitenSet.add(h);
         zeiten[d] = tempZeitenSet;
-        faecher.updateFach(
-            index: changingFach, name: currentFach.name, zeiten: zeiten);
       }
     }
   }
