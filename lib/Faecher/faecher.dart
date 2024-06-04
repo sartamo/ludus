@@ -119,18 +119,18 @@ class _FachState extends State<Fach> {
                     setState(() => _selectedPage = value);
                   }
                 },
-                children: const <Pages, Widget> {
+                children: <Pages, Widget> {
                   Pages.unterrichtszeiten: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text('Unterrichtszeiten'),
-                  ),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: ((MediaQuery.of(context).size.width) > 632 ? const Text('Unterrichtszeiten') : const Icon(CupertinoIcons.table)),
+                    ),
                   Pages.notizen: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text('Notizen'),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: ((MediaQuery.of(context).size.width) > 632 ? const Text('Notizen') : const Icon(CupertinoIcons.pencil)),
                   ),
                   Pages.hausaufgaben: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text('Hausaufgaben'),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: ((MediaQuery.of(context).size.width) > 632 ? const Text('Hausaufgaben') : const Icon(CupertinoIcons.book)),
                   ),
                 },
               ),
