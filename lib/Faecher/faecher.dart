@@ -6,6 +6,8 @@ import 'package:suppaapp/FaecherEinstellungen/bearbeiten.dart';
 import 'package:suppaapp/Faecher/management.dart';
 import 'package:suppaapp/Notizen/hinzufuegen.dart';
 import 'package:suppaapp/Notizen/bearbeiten.dart';
+import 'package:suppaapp/Hausaufgaben/hinzufuegen.dart';
+import 'package:suppaapp/Hausaufgaben/bearbeiten.dart';
 import 'package:suppaapp/globals.dart';
 
 enum Pages {unterrichtszeiten, notizen, hausaufgaben}
@@ -16,11 +18,13 @@ class FachData {
   SplayTreeMap<int, SplayTreeSet<int>> zeiten;
   Color farbe;
   List<(String, String)> notizen; // (titel, inhalt)
+  List<(String, DateTime)> hausaufgaben; // (inhalt, datum)
 
   FachData({required this.name, 
       required this.zeiten, 
       required this.farbe,
-      required this.notizen
+      required this.notizen,
+      required this.hausaufgaben,
   });
 }
 
@@ -35,18 +39,21 @@ class Fach extends StatefulWidget {
   SplayTreeMap<int, SplayTreeSet<int>> get zeiten => data.zeiten;
   Color get farbe => data.farbe;
   List<(String, String)> get notizen => data.notizen;
+  List<(String, DateTime)> get hausaufgaben => data.hausaufgaben;
 
   set name(String newName) => data.name = newName;
   set zeiten(SplayTreeMap<int, SplayTreeSet<int>> newZeiten) =>
       data.zeiten = newZeiten;
   set farbe(Color newFarbe) => data.farbe = newFarbe;
   set notizen(List<(String, String)> newNotizen) => data.notizen = newNotizen;
+  set hausaufgaben(List<(String, DateTime)> newHausaufgaben) => data.hausaufgaben = newHausaufgaben;
 
   @override
   State<Fach> createState() => _FachState();
 }
 
 class _FachState extends State<Fach> {
+  late Map<DateTime, List<String>> _hausaufgabenMap;
   Pages _selectedPage = Pages.unterrichtszeiten;
   String _getSubtitleZeiten(int index) {
     SplayTreeSet<int> value = widget.zeiten.values.toList()[index];
@@ -62,12 +69,27 @@ class _FachState extends State<Fach> {
     return subtitle;
   }
 
+  Map<DateTime, List<String>> _getHausaufgabenMap() { // Gibt die Hausaufgaben umgeschrieben als Map zurück (Datum wird einer Liste der entsprechenden Hausis zugeordnet)
+    Map<DateTime, List<String>> map = {};
+    for ((String, DateTime) element in widget.hausaufgaben) {
+      List<String>? entry = map[element.$2];
+      if (entry == null) {
+        map[element.$2] = [element.$1];
+      }
+      else {
+        map[element.$2] = entry..add(element.$1);
+      }
+    }
+    return map;
+  }
+
   @override
   void initState() {
+    _hausaufgabenMap = _getHausaufgabenMap();
     super.initState();
     faecher.addListener(() {
       if (mounted) { // Ruft setState nur auf, wenn das Widget angezeigt wird
-        setState(() {});
+        setState(() {_hausaufgabenMap = _getHausaufgabenMap();});
       }
     });
   }
@@ -80,6 +102,7 @@ class _FachState extends State<Fach> {
 
   @override
   Widget build(BuildContext context) {
+    _hausaufgabenMap = _getHausaufgabenMap();
     return CupertinoPageScaffold(
       child: SingleChildScrollView(
         child: Column(
@@ -146,7 +169,17 @@ class _FachState extends State<Fach> {
                   : CupertinoButton(
                     padding: EdgeInsets.zero,
                     child: const Icon(CupertinoIcons.add),
-                    onPressed: () {},
+                    onPressed: () async {
+                      (String, DateTime)? result = await Navigator.of(context).push(CupertinoPageRoute(
+                        builder: ((context) => const HausaufgabeHinzufuegen())
+                      ));
+                      if (result != null) {
+                        faecher.updateFach(
+                          index: faecher.faecher.indexOf(widget),
+                          hausaufgaben: widget.hausaufgaben + [result],
+                        );
+                      }
+                    },
                   ),
             ),
             _selectedPage == Pages.unterrichtszeiten
@@ -207,14 +240,47 @@ class _FachState extends State<Fach> {
                       ),
                     ),
                   )
-                : const Column(
-                  children: [
-                    SizedBox(
-                        height: 20,
+                : widget.hausaufgaben.isEmpty
+                  ? Column(
+                    children: [
+                      const SizedBox(
+                          height: 20,
+                        ),
+                      Text('Hausaufgaben vom Fach ${widget.name} leer'),
+                    ])
+                  : Column( // Für jedes unterschiedliche Datum erstellen wir eine CupertinoListSection
+                    children: List<CupertinoListSection>.generate(
+                      _hausaufgabenMap.length, 
+                      (i) => CupertinoListSection(
+                        header: Text("${wochentage[_hausaufgabenMap.keys.elementAt(i).weekday - 1]}, ${_hausaufgabenMap.keys.elementAt(i).day}.${_hausaufgabenMap.keys.elementAt(i).month}.${_hausaufgabenMap.keys.elementAt(i).year}"),
+                        children: List<Widget>.generate(
+                          _hausaufgabenMap.values.elementAt(i).length, 
+                          (j) => CupertinoListTile(
+                            title: Text(_hausaufgabenMap.values.elementAt(i)[j]),
+                            trailing: CupertinoButton(
+                              padding: EdgeInsets.zero,
+                              child: const Icon(CupertinoIcons.minus),
+                              onPressed: () => faecher.updateFach(
+                                index: faecher.faecher.indexOf(widget),
+                                hausaufgaben: widget.hausaufgaben..removeWhere((element) => (element.$1 == _hausaufgabenMap.values.elementAt(i)[j] && element.$2 == _hausaufgabenMap.keys.elementAt(i)))
+                              ),
+                            ),
+                            onTap: () async {
+                              (String, DateTime)? result = await Navigator.of(context).push(CupertinoPageRoute(
+                                builder: (context) => HausaufgabeBearbeiten((_hausaufgabenMap.values.elementAt(i)[j], _hausaufgabenMap.keys.elementAt(i)))
+                              ));
+                              if (result != null) {
+                                widget.hausaufgaben[widget.hausaufgaben.indexWhere((element) => (element.$1 == _hausaufgabenMap.values.elementAt(i)[j] && element.$2 == _hausaufgabenMap.keys.elementAt(i)))] = result;
+                                faecher.updateFach(
+                                  index: faecher.faecher.indexOf(widget),
+                                );
+                              }
+                            },
+                          ),
+                        ),
                       ),
-                    Text('Hier stehen mal die Hausaufgaben'),
-                  ],
-                ),
+                    ),
+                  ),
             ],
         ),
       ),

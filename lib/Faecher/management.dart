@@ -21,7 +21,10 @@ class FaecherList extends ChangeNotifier {
     List<String> fromSaveNamen = preferences.getStringList('namen') ?? [];
     List<String> fromSaveZeiten = preferences.getStringList('zeiten') ?? List.generate(fromSaveNamen.length, (index) => '{}'); // Wenn der Key nicht eingetragen ist,
     List<String> fromSaveNotizen = preferences.getStringList('notizen') ?? List.generate(fromSaveNamen.length, (index) => '[]');  // erstelle eine Liste mit leeren Strings
-    List<String> fromSaveFarben = preferences.getStringList('farben') ?? List.generate(fromSaveNamen.length, (index) => '[]'); // der Länge der Liste der Namen
+    List<String> fromSaveHausaufgaben = preferences.getStringList('hausaufgaben') ?? List.generate(fromSaveNamen.length, (index) => '[]'); // der Länge der Liste der Namen
+    List<String> fromSaveFarben = preferences.getStringList('farben') ?? List.generate(fromSaveNamen.length, (index) => '[]');
+
+    // Weil die Listen gleich lang sein müssen, fügen wir bei Bedarf leere Listen hinzu (nur nötig, wenn der Save manipuliert wurde)
 
     while (fromSaveZeiten.length < fromSaveNamen.length) {
       fromSaveZeiten.add('{}');
@@ -31,11 +34,15 @@ class FaecherList extends ChangeNotifier {
       fromSaveNotizen.add('[]');
     }
 
+    while (fromSaveHausaufgaben.length < fromSaveNamen.length) {
+      fromSaveHausaufgaben.add('[]');
+    }
+
     while (fromSaveFarben.length < fromSaveNamen.length) {
       fromSaveFarben.add('[]');
     }
 
-    for (int i = 0; i < fromSaveNamen.length; i++) {
+    for (int i = 0; i < fromSaveNamen.length; i++) { // Decoden der Zeiten
       Map zeitenDecoded = jsonDecode(fromSaveZeiten[i]);
       SplayTreeMap<int, SplayTreeSet<int>> myZeiten = SplayTreeMap();
       zeitenDecoded.forEach((key, value) {
@@ -45,75 +52,36 @@ class FaecherList extends ChangeNotifier {
           );
         }
       });
-      List<(String, String)> myNotizen = [];
+
+      List<(String, String)> myNotizen = []; // Decoden der Notizen
       List notizenDecoded = jsonDecode(fromSaveNotizen[i]);
       for (dynamic element in notizenDecoded) {
-        if (element is List && element.length == 2 && element[0] is String && element[1] is String) {
+        if (element is List && element.length == 2 && element[0] is String && element[1] is String) { // Überprüfen, ob alles seine Richtigkeit hat, sonst wird nichts gemacht
           myNotizen.add((element[0], element[1]));
         }
       }
-      List farbenDecoded = jsonDecode(fromSaveFarben[i]);
+
+      List hausaufgabenDecoded = jsonDecode(fromSaveHausaufgaben[i]);
+      List<(String, DateTime)> myHausaufgaben = [];
+      for (dynamic element in hausaufgabenDecoded) {
+        if (element is List && element.length == 2 && element[0] is String && element[1] is String) {
+          myHausaufgaben.add((element[0], DateTime.parse(element[1])));
+        }
+      }
+
+      List farbenDecoded = jsonDecode(fromSaveFarben[i]); // Decoden der Farben
       Color myFarbe = CupertinoColors.activeOrange;
       if (farbenDecoded.length == 4 && farbenDecoded[0] is int && farbenDecoded[1] is int && farbenDecoded[2] is int && farbenDecoded[3] is int) {
         myFarbe = Color.fromARGB(farbenDecoded[0], farbenDecoded[1], farbenDecoded[2], farbenDecoded[3]);
       }
-      addFach(
+      addFach( // Hinzufügen des finalen Fachs
         name: fromSaveNamen[i],
         zeiten: myZeiten,
         notizen: myNotizen,
         farbe: myFarbe,
+        hausaufgaben: myHausaufgaben,
       );
     }
-
-    /*
-    Map<String, dynamic> fromSaveFaecher =
-      jsonDecode(preferences.getString('faecher') ?? '');
-    fromSaveFaecher.forEach((name, zeitenEncoded) {
-      if (zeitenEncoded is String) {
-        Map<String, dynamic> zeitenModified = jsonDecode(zeitenEncoded);
-        SplayTreeMap<int, SplayTreeSet<int>> zeiten = SplayTreeMap();
-        zeitenModified.forEach((key, value) {
-          if (value is List) {
-            zeiten[int.parse(key)] = SplayTreeSet.of(List.generate(value.length,
-              (index) => value[index] is int ? value[index] : 0));
-          } else {
-            zeiten[int.parse(key)] = SplayTreeSet();
-          }
-        });
-        addFach(name: name, zeiten: zeiten, farbe: CupertinoColors.activeOrange);
-      } else {
-        addFach(name: name, zeiten: SplayTreeMap(), farbe: CupertinoColors.activeOrange);
-      }
-    });
-
-    Map<String, dynamic> fromSaveNotizen =
-      jsonDecode(preferences.getString('notizen') ?? '');
-    fromSaveNotizen.forEach((name, notizen) {
-      if (notizen is List<dynamic>) {
-        updateFach(
-          index: _faecher.indexWhere((element) => element.name == name),
-          notizen: List.generate(notizen.length, (index) => 
-            notizen[index] is List && notizen[index][0] is String && notizen[index][1] is String
-            ? (notizen[index][0], notizen[index][1])
-            : ('', '') // Safety Check: Wenn die Speicherdatei aus irgendeinem Grund nicht unser Format hat, übernehme leere Strings
-            ));
-      }
-    });
-
-    Map<String, dynamic> fromSaveColors =
-      jsonDecode(preferences.getString('farben') ?? '');
-    fromSaveColors.forEach((name, color) {
-      if (color is List) {
-        if (color.every((element) => element is int) && color.length == 4) {
-          updateFach(
-            index: _faecher.indexWhere((element) => element.name == name),
-            farbe: Color.fromARGB(color[0], color[1], color[2], color[3]),
-          );
-        }
-      }
-      // print(_faecher.firstWhere((element) => element.name == name).farbe);
-    });
-    */
   }
 
   Future<void> _saveFaecher() async {
@@ -122,6 +90,7 @@ class FaecherList extends ChangeNotifier {
     List<String> toSaveNamen = []; // Auflistung aller Namen
     List<String> toSaveZeiten = [];
     List<String> toSaveNotizen = [];
+    List<String> toSaveHausaufgaben = [];
     List<String> toSaveFarben = [];
 
     for (Fach fach in _faecher) {
@@ -135,6 +104,10 @@ class FaecherList extends ChangeNotifier {
         fach.notizen.length, 
         (index) => [fach.notizen[index].$1, fach.notizen[index].$2],
       )));
+      toSaveHausaufgaben.add(jsonEncode(List<List<String>>.generate(
+        fach.hausaufgaben.length, 
+        (index) => [fach.hausaufgaben[index].$1, fach.hausaufgaben[index].$2.toString()]
+      )));
       toSaveFarben.add(jsonEncode(
         [fach.farbe.alpha, fach.farbe.red, fach.farbe.green, fach.farbe.blue]
       ));
@@ -143,21 +116,29 @@ class FaecherList extends ChangeNotifier {
     preferences.setStringList('namen', toSaveNamen);
     preferences.setStringList('zeiten', toSaveZeiten);
     preferences.setStringList('notizen', toSaveNotizen);
+    preferences.setStringList('hausaufgaben', toSaveHausaufgaben);
     preferences.setStringList('farben', toSaveFarben);
   }
 
   List<Fach> get faecher => _faecher;
 
   void addFach(
-      // Aufruf: faecherList.addFach(name: name, zeiten: zeiten, notizen: notizen)
-      {required String name,
-      required SplayTreeMap<int, SplayTreeSet<int>> zeiten,
-      Color farbe = CupertinoColors.activeOrange,
-      List<(String, String)> notizen = const []}) {
-    Fach myFach = Fach(FachData(name: name, zeiten: zeiten, farbe: farbe, notizen: notizen));
-    _faecher.add(myFach);
-    Future<void> result = _saveFaecher();
-    result.whenComplete(() => notifyListeners());
+    // Aufruf: faecherList.addFach(name: name, zeiten: zeiten, notizen: notizen, farbe: farbe, hausaufgaben: hausaufgaben)
+    {required String name,
+    required SplayTreeMap<int, SplayTreeSet<int>> zeiten,
+    Color farbe = CupertinoColors.activeOrange,
+    List<(String, String)> notizen = const [],
+    List<(String, DateTime)> hausaufgaben = const []}) {
+      try{
+        hausaufgaben.sort((a, b) => a.$2.compareTo(b.$2)); // Sortieren der Hausaufgaben nach Datum
+      }
+      catch(e) {
+        hausaufgaben = [];
+      }
+      Fach myFach = Fach(FachData(name: name, zeiten: zeiten, farbe: farbe, notizen: notizen, hausaufgaben: hausaufgaben));
+      _faecher.add(myFach);
+      Future<void> result = _saveFaecher();
+      result.whenComplete(() => notifyListeners());
   }
 
   void removeFach(int index) {
@@ -168,13 +149,13 @@ class FaecherList extends ChangeNotifier {
   }
 
   void updateFach(
-      // Aufruf: faecherList.updateFach(index: index, name: name, zeiten: zeiten, notizen: notizen)
-      // name und zeiten können weggelassen werden
+      // Aufruf: faecherList.updateFach(index: index, name: name, zeiten: zeiten, notizen: notizen, farbe: farbe, hausaufgaben: hausaufgaben)
       {required int index,
       String? name,
       SplayTreeMap<int, SplayTreeSet<int>>? zeiten,
       Color? farbe,
-      List<(String, String)>? notizen}) {
+      List<(String, String)>? notizen,
+      List<(String, DateTime)>? hausaufgaben}) {
     if (zeiten != null) {
       _faecher[index].zeiten = zeiten;
     }
@@ -186,6 +167,10 @@ class FaecherList extends ChangeNotifier {
     }
     if (notizen != null) {
       _faecher[index].notizen = notizen;
+    }
+    if (hausaufgaben != null) {
+      hausaufgaben.sort((a, b) => a.$2.compareTo(b.$2)); // Sortieren der Hausaufgaben nach Datum
+      _faecher[index].hausaufgaben = hausaufgaben;
     }
     _saveFaecher();
     notifyListeners();

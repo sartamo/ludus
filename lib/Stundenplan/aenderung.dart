@@ -26,7 +26,7 @@ class StundenplanBearbeiten extends StatefulWidget {
   final double _hoehe = 100; //höhe der Reihen
 
   @override
-  StundenplanBearbeitenState createState() => StundenplanBearbeitenState();
+  State<StundenplanBearbeiten> createState() => StundenplanBearbeitenState();
 }
 
 class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
