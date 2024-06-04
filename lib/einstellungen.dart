@@ -41,7 +41,6 @@ class EinstellungenState extends State<Einstellungen> {
               child: CupertinoTextField(
                 controller: _stundenplanHoeheController,
                 autocorrect: false,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: false),
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 onChanged: (value) {
