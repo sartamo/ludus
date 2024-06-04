@@ -7,8 +7,21 @@ class Einstellungen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Willkommen in den Einstellungen <3') 
+    return CupertinoPageScaffold(
+      child: Column(
+        children: [
+          const CupertinoNavigationBar(
+            middle: Text('Einstellungen'),
+          ),
+          CupertinoListSection(
+            children: const [
+              CupertinoListTile(
+                title: Text('Leider gibt es momentan noch keine Einstellungen'),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
