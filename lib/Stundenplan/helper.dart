@@ -67,7 +67,7 @@ CupertinoButton getButton({
       color: faecher.faecher[getFachIndex(d: d, h: h, a: a)].farbe,
       //disabledColor: _hourColor,
       pressedOpacity: 1.0,
-      child: Text(stundenplanA[d][h][a]),
+      child: Text(stundenplanA[d][h][a], maxLines: 1, overflow: TextOverflow.ellipsis,),
     );
   }
 }
