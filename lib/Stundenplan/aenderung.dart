@@ -23,7 +23,7 @@ class StundenplanBearbeiten extends StatefulWidget {
   final String name;
   final int currentFachIndex;
   final MutableFarbe farbe;
-  final double _hoehe = 100; //höhe der Reihen
+  final double _hoehe = 1.3; //höhe der Reihen
 
   @override
   State<StundenplanBearbeiten> createState() => StundenplanBearbeitenState();
@@ -103,7 +103,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
     }) {
       if (stundenplanB[d][h].isEmpty) {
         return CupertinoButton(
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.all(3),
           onPressed: () {
             if (widget.zeiten.containsKey(d)) {
               if (widget.zeiten[d]!.contains(h)) {
@@ -124,7 +124,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
         );
       } else {
         return CupertinoButton(
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.all(3),
           onPressed: () {
             if (widget.zeiten.containsKey(d)) {
               if (widget.zeiten[d]!.contains(h)) {
@@ -144,7 +144,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
               ? widget.farbe.farbe
               : faecher.faecher[getFachIndex(d: d, h: h, a: a)].farbe,
           pressedOpacity: 1.0,
-          child: Text(stundenplanB[d][h][a]),
+          child: Text(stundenplanB[d][h][a], maxLines: 1, overflow: TextOverflow.ellipsis,),
         );
       }
     }
@@ -155,22 +155,22 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           SizedBox(
-            height: widget._hoehe,
+            height: breite*widget._hoehe,
             width: breite,
             child: CupertinoButton(
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsets.all(3),
               onPressed: null,
               color: stundenplanFirstColumnColor,
               disabledColor: stundenplanFirstColumnColor,
               pressedOpacity: 1.0,
               child: Text(wochentage[
-                  d]), // d is the index of the day; h is the index of the hour; a is the index of the subject (if there are multiple subjects in one hour)
+                  d], maxLines: 1, overflow: TextOverflow.ellipsis,), // d is the index of the day; h is the index of the hour; a is the index of the subject (if there are multiple subjects in one hour)
             ),
           ),
           ...List.generate(stunden.length, (h) {
             if (stundenplanB[d][h].isEmpty) {
               return SizedBox(
-                height: widget._hoehe,
+                height: breite*widget._hoehe,
                 width: breite,
                 child: getAenderungsButton(
                     d: d,
@@ -179,13 +179,13 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
               );
             } else {
               return SizedBox(
-                height: widget._hoehe,
+                height: breite*widget._hoehe,
                 width: breite,
                 child: Row(
                   children: List.generate(stundenplanB[d][h].length, (a) {
                     return Expanded(
                       child: SizedBox(
-                        height: widget._hoehe,
+                        height: breite*widget._hoehe,
                         child: getAenderungsButton(d: d, h: h, a: a),
                       ),
                     );
@@ -209,10 +209,10 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
-              height: widget._hoehe,
+              height: breite*widget._hoehe,
               width: breite,
               child: const CupertinoButton(
-                padding: EdgeInsets.zero,
+                padding: EdgeInsets.all(3),
                 onPressed: null,
                 color: stundenplanFirstColumnColor,
                 disabledColor: stundenplanFirstColumnColor,
@@ -222,15 +222,15 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
             ),
             ...stunden.map((stunde) {
               return SizedBox(
-                height: widget._hoehe,
+                height: breite*widget._hoehe,
                 width: breite,
                 child: CupertinoButton(
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.all(3),
                   onPressed: null,
                   color: stundenplanFirstColumnColor,
                   disabledColor: stundenplanFirstColumnColor,
                   pressedOpacity: 1.0,
-                  child: Text(stunde),
+                  child: Text(stunde, maxLines: 1, overflow: TextOverflow.ellipsis,),
                 ),
               );
             })

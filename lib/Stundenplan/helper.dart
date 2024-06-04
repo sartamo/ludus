@@ -43,7 +43,7 @@ CupertinoButton getButton({
 }) {
   if (stundenplanA[d][h].isEmpty) {
     return CupertinoButton(
-      padding: EdgeInsets.zero,
+      padding: const EdgeInsets.all(3),
       onPressed: changingFach == -1
           ? null
           : () => clickButton(
@@ -59,7 +59,7 @@ CupertinoButton getButton({
     );
   } else {
     return CupertinoButton(
-      padding: EdgeInsets.zero,
+      padding: const EdgeInsets.all(3),
       onPressed: () {
         clickButton(
             context: context, changingFach: changingFach, d: d, h: h, a: a);
@@ -67,7 +67,7 @@ CupertinoButton getButton({
       color: faecher.faecher[getFachIndex(d: d, h: h, a: a)].farbe,
       //disabledColor: _hourColor,
       pressedOpacity: 1.0,
-      child: Text(stundenplanA[d][h][a]),
+      child: Text(stundenplanA[d][h][a], maxLines: 1, overflow: TextOverflow.ellipsis,),
     );
   }
 }
