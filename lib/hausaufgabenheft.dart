@@ -1,6 +1,7 @@
 // Die Seite für das Hausaufgabenheft
 
 import 'package:flutter/cupertino.dart';
+import 'dart:collection';
 import 'package:suppaapp/Faecher/management.dart';
 import 'package:suppaapp/Faecher/faecher.dart';
 import 'package:suppaapp/Hausaufgaben/hinzufuegen.dart';
@@ -26,23 +27,24 @@ class _HausaufgabenheftState extends State<Hausaufgabenheft> {
     return result;
   }
 
-  Map<DateTime, List<(Fach, String)>> _getHausaufgabenMap() { // Gibt die Hausaufgaben umgeschrieben als Map zurück (Datum wird einer Liste der entsprechenden Hausis zugeordnet)
-    Map<DateTime, List<(Fach, String)>> map = {}; // Format: datum : (fach, content)
+  SplayTreeMap<DateTime, List<(Fach, int,  String)>> _getHausaufgabenMap() { // Gibt die Hausaufgaben umgeschrieben als Map zurück (Datum wird einer Liste der entsprechenden Hausis zugeordnet)
+    SplayTreeMap<DateTime, List<(Fach, int, String)>> map = SplayTreeMap(); // Format: datum : (fach, position, content)
     for (Fach fach in faecher.faecher) {
-      for ((String, DateTime) element in fach.hausaufgaben) {
-        List<(Fach, String)>? entry = map[element.$2];
+      for (int i = 0; i < fach.hausaufgaben.length; i++) {
+        (String, DateTime) element = fach.hausaufgaben[i];
+        List<(Fach, int, String)>? entry = map[element.$2];
         if (entry == null) {
-          map[element.$2] = [(fach, element.$1)];
+          map[element.$2] = [(fach, i, element.$1)];
         }
         else {
-          map[element.$2] = entry..add((fach, element.$1));
+          map[element.$2] = entry..add((fach, i, element.$1));
         }
       }
     }
     return map;
   }
 
-  late Map<DateTime, List<(Fach, String)>> _hausaufgabenMap;
+  late SplayTreeMap<DateTime, List<(Fach, int, String)>> _hausaufgabenMap;
 
   @override
   void initState() {
@@ -118,14 +120,14 @@ class _HausaufgabenheftState extends State<Hausaufgabenheft> {
                 children: List<Widget>.generate(
                   _hausaufgabenMap.values.elementAt(i).length,
                   (j) => CupertinoListTile(
-                    title: Text(_hausaufgabenMap.values.elementAt(i)[j].$2), // Content
+                    title: Text(_hausaufgabenMap.values.elementAt(i)[j].$3), // Content
                     subtitle: Text(_hausaufgabenMap.values.elementAt(i)[j].$1.name), // Fachname
                     onTap: () async {
                       (String, DateTime)? result = await Navigator.of(context).push(CupertinoPageRoute(
-                        builder: (context) => HausaufgabeBearbeiten((_hausaufgabenMap.values.elementAt(i)[j].$2, _hausaufgabenMap.keys.elementAt(i))),
+                        builder: (context) => HausaufgabeBearbeiten((_hausaufgabenMap.values.elementAt(i)[j].$3, _hausaufgabenMap.keys.elementAt(i))),
                       ));
                       if (result != null) {
-                        _hausaufgabenMap.values.elementAt(i)[j].$1.hausaufgaben[_hausaufgabenMap.values.elementAt(i)[j].$1.hausaufgaben.indexWhere((element) => (element.$1 == _hausaufgabenMap.values.elementAt(i)[j].$1.name && element.$2 == _hausaufgabenMap.keys.elementAt(i)))] = result;
+                        _hausaufgabenMap.values.elementAt(i)[j].$1.hausaufgaben[_hausaufgabenMap.values.elementAt(i)[j].$2] = result;
                         faecher.updateFach(
                           index: faecher.faecher.indexOf(_hausaufgabenMap.values.elementAt(i)[j].$1)
                         );
@@ -136,7 +138,7 @@ class _HausaufgabenheftState extends State<Hausaufgabenheft> {
                       child: const Icon(CupertinoIcons.minus),
                       onPressed: () => faecher.updateFach(
                         index: faecher.faecher.indexOf(_hausaufgabenMap.values.elementAt(i)[j].$1),
-                        hausaufgaben: _hausaufgabenMap.values.elementAt(i)[j].$1.hausaufgaben..removeWhere((element) => (element.$1 == _hausaufgabenMap.values.elementAt(i)[j].$2 && element.$2 == _hausaufgabenMap.keys.elementAt(i)))
+                        hausaufgaben: _hausaufgabenMap.values.elementAt(i)[j].$1.hausaufgaben..removeAt(_hausaufgabenMap.values.elementAt(i)[j].$2)
                       ),
                     )
                   ))

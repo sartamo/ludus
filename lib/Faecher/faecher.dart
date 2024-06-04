@@ -53,7 +53,7 @@ class Fach extends StatefulWidget {
 }
 
 class _FachState extends State<Fach> {
-  late Map<DateTime, List<String>> _hausaufgabenMap;
+  late SplayTreeMap<DateTime, List<(int, String)>> _hausaufgabenMap;
   Pages _selectedPage = Pages.unterrichtszeiten;
   String _getSubtitleZeiten(int index) {
     SplayTreeSet<int> value = widget.zeiten.values.toList()[index];
@@ -69,15 +69,16 @@ class _FachState extends State<Fach> {
     return subtitle;
   }
 
-  Map<DateTime, List<String>> _getHausaufgabenMap() { // Gibt die Hausaufgaben umgeschrieben als Map zurück (Datum wird einer Liste der entsprechenden Hausis zugeordnet)
-    Map<DateTime, List<String>> map = {};
-    for ((String, DateTime) element in widget.hausaufgaben) {
-      List<String>? entry = map[element.$2];
+  SplayTreeMap<DateTime, List<(int, String)>> _getHausaufgabenMap() { // Gibt die Hausaufgaben umgeschrieben als Map zurück
+    SplayTreeMap<DateTime, List<(int, String)>> map = SplayTreeMap(); // Format: datum
+    for (int i = 0; i < widget.hausaufgaben.length; i++) {
+      (String, DateTime) element = widget.hausaufgaben[i];
+      List<(int, String)>? entry = map[element.$2];
       if (entry == null) {
-        map[element.$2] = [element.$1];
+        map[element.$2] = [(i, element.$1)];
       }
       else {
-        map[element.$2] = entry..add(element.$1);
+        map[element.$2] = entry..add((i, element.$1));
       }
     }
     return map;
@@ -256,21 +257,21 @@ class _FachState extends State<Fach> {
                         children: List<Widget>.generate(
                           _hausaufgabenMap.values.elementAt(i).length, 
                           (j) => CupertinoListTile(
-                            title: Text(_hausaufgabenMap.values.elementAt(i)[j]),
+                            title: Text(_hausaufgabenMap.values.elementAt(i)[j].$2),
                             trailing: CupertinoButton(
                               padding: EdgeInsets.zero,
                               child: const Icon(CupertinoIcons.minus),
                               onPressed: () => faecher.updateFach(
                                 index: faecher.faecher.indexOf(widget),
-                                hausaufgaben: widget.hausaufgaben..removeWhere((element) => (element.$1 == _hausaufgabenMap.values.elementAt(i)[j] && element.$2 == _hausaufgabenMap.keys.elementAt(i)))
+                                hausaufgaben: widget.hausaufgaben..removeAt(_hausaufgabenMap.values.elementAt(i)[j].$1)
                               ),
                             ),
                             onTap: () async {
                               (String, DateTime)? result = await Navigator.of(context).push(CupertinoPageRoute(
-                                builder: (context) => HausaufgabeBearbeiten((_hausaufgabenMap.values.elementAt(i)[j], _hausaufgabenMap.keys.elementAt(i)))
+                                builder: (context) => HausaufgabeBearbeiten((_hausaufgabenMap.values.elementAt(i)[j].$2, _hausaufgabenMap.keys.elementAt(i)))
                               ));
                               if (result != null) {
-                                widget.hausaufgaben[widget.hausaufgaben.indexWhere((element) => (element.$1 == _hausaufgabenMap.values.elementAt(i)[j] && element.$2 == _hausaufgabenMap.keys.elementAt(i)))] = result;
+                                widget.hausaufgaben[_hausaufgabenMap.values.elementAt(i)[j].$1] = result;
                                 faecher.updateFach(
                                   index: faecher.faecher.indexOf(widget),
                                 );
