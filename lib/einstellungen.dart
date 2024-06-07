@@ -43,7 +43,7 @@ class EinstellungenState extends State<Einstellungen> {
                 autocorrect: false,
                 textAlign: TextAlign.center,
                 maxLines: 1,
-                onChanged: (value) {
+                onSubmitted: (value) {
                   if (value != '') {
                     try {
                       value = value.replaceAll(',', '.');

@@ -15,7 +15,7 @@ class Suppaapp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const CupertinoApp(
       debugShowCheckedModeBanner : false,
-      title: 'Schulus Appus',
+      title: 'Ludus',
       theme: CupertinoThemeData(brightness: Brightness.light),
       home: Homepage(),
     );
@@ -33,22 +33,27 @@ class Homepage extends StatelessWidget {
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.list_bullet),
             label: 'Fächerliste',
+            tooltip: 'Fächerliste',
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.book),
             label: 'Hausaufgaben',
+            tooltip: 'Hausaufgaben',
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.pencil),
-            label: 'Notizheft'
+            label: 'Notizheft',
+            tooltip: 'Notizheft',
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.table),
-            label: 'Stundenplan'
+            label: 'Stundenplan',
+            tooltip: 'Stundenplan',
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.settings),
-            label: 'Einstellungen'
+            label: 'Einstellungen',
+            tooltip: 'Einstellungen',
           ),
         ],
       ), 

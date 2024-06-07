@@ -1,12 +1,12 @@
 {
-    "name": "suppaapp",
-    "short_name": "suppaapp",
+    "name": "Ludus",
+    "short_name": "Ludus",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#FFFFFF",
+    "theme_color": "#f9f9f9",
+    "description": "Die fast beste Schul-App",
+    "orientation": "landscape-primary",
     "prefer_related_applications": false,
     "icons": [
         {
@@ -20,13 +20,13 @@
             "type": "image/png"
         },
         {
-            "src": "icons/Icon-maskable-192.png",
+            "src": "icons/Icon-192.png",
             "sizes": "192x192",
             "type": "image/png",
             "purpose": "maskable"
         },
         {
-            "src": "icons/Icon-maskable-512.png",
+            "src": "icons/Icon-512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable"
