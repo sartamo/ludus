@@ -25,7 +25,8 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
   late String _selectedName = widget.fach.name;
   late final SplayTreeMap<int, SplayTreeSet<int>> _zeiten =
       SplayTreeMap<int, SplayTreeSet<int>>.from(
-          widget.fach.zeiten); // SplayTreeMap: Automatische Sortierung
+    widget.fach.zeiten.map(((key, value)
+    => MapEntry(key, SplayTreeSet<int>.from(value)))),); // SplayTreeMap: Automatische Sortierung
   late final TextEditingController _textController;
   late final MutableFarbe _selectedFarbe =
       MutableFarbe(farbe: widget.fach.farbe);
@@ -96,9 +97,7 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
                     _textController, // Fächername steht am Anfang im Textfeld
                 onChanged: (value) => setState(() => _selectedName = value),
               ),
-
               const SizedBox(height: 8),
-
               Material(
                 color: Colors.transparent,
                 elevation: 0,
@@ -151,9 +150,7 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 8),
-
               StundenplanBearbeiten(
                 zeiten: _zeiten,
                 name: _selectedName,
