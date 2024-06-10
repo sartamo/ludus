@@ -222,10 +222,36 @@ class _FachState extends State<Fach> {
                         trailing: CupertinoButton(
                           padding: EdgeInsets.zero,
                           child: const Icon(CupertinoIcons.minus),
-                          onPressed: () => faecher.updateFach(
-                            index: faecher.faecher.indexOf(widget),
-                            notizen: widget.notizen..removeAt(index)
-                          ),
+                          onPressed: () {
+                            showCupertinoDialog(
+                              context: context,
+                              builder: (context) =>
+                              CupertinoAlertDialog(
+                                title: Text('${widget.notizen[index].$1} löschen?'),
+                                content: Text('Sind Sie sicher, dass Sie die Notiz ${widget.notizen[index].$1} löschen möchten?'),
+                                actions: [
+                                  CupertinoDialogAction(
+                                    isDefaultAction: true,
+                                    child: const Text('Abbrechen'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  CupertinoDialogAction(
+                                    isDestructiveAction: true,
+                                    child: const Text('Löschen'),
+                                    onPressed: () {
+                                      faecher.updateFach(
+                                        index: faecher.faecher.indexOf(widget),
+                                        notizen: widget.notizen..removeAt(index)
+                                      );
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
                         ),
                         onTap: () async {
                           (String, String)? result = await Navigator.of(context).push(CupertinoPageRoute(
