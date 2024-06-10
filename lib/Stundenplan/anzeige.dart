@@ -17,6 +17,7 @@ class Stundenplan extends StatefulWidget {
 }
 
 class _StundenplanState extends State<Stundenplan> {
+  final EdgeInsetsGeometry _buttonPadding = const EdgeInsets.all(0);
 
   List<Column> getTage(double breite) {
     return List.generate((wochentage.length), (d) {
@@ -27,7 +28,7 @@ class _StundenplanState extends State<Stundenplan> {
           SizedBox(
             height: breite*stundenplanHoeheNotifier.value,
             width: breite,
-            child: CupertinoButton(
+            child: Padding(padding: _buttonPadding, child: CupertinoButton(
               padding: const EdgeInsets.all(3),
               onPressed: null,
               color: stundenplanFirstColumnColor,
@@ -35,19 +36,19 @@ class _StundenplanState extends State<Stundenplan> {
               pressedOpacity: 1.0,
               child: Text(wochentage[
                   d], maxLines: 1, overflow: TextOverflow.ellipsis,), // d is the index of the day; h is the index of the hour; a is the index of the subject (if there are multiple subjects in one hour)
-            ),
+            ),),
           ),
           ...List.generate(stunden.length, (h) {
             if (stundenplanA[d][h].isEmpty) {
               return SizedBox(
                 height: breite*stundenplanHoeheNotifier.value,
                 width: breite,
-                child: getButton(
+                child: Padding(padding: _buttonPadding, child:  getButton(
                     context: context,
                     changingFach: -1,
                     d: d,
                     h: h,
-                    a: 0), //a isn't used here, but is required, if !_stundenplanA[d][h].isEmpty
+                    a: 0),), //a isn't used here, but is required, if !_stundenplanA[d][h].isEmpty
               );
             } else {
               return SizedBox(
@@ -211,7 +212,7 @@ class _StundenplanState extends State<Stundenplan> {
                     SizedBox(
                       height: breite*stundenplanHoeheNotifier.value,
                       width: breite,
-                      child: const CupertinoButton(
+                      child: Padding(padding: _buttonPadding, child: const CupertinoButton(
                         padding: EdgeInsets.all(3),
                         onPressed: null,
                         color: stundenplanFirstColumnColor,
@@ -219,19 +220,19 @@ class _StundenplanState extends State<Stundenplan> {
                         pressedOpacity: 1.0,
                         child: Text(''),
                       ),
-                    ),
+                    ),),
                     ...stunden.map((stunde) {
                       return SizedBox(
                         height: breite*stundenplanHoeheNotifier.value,
                         width: breite,
-                        child: CupertinoButton(
+                        child: Padding(padding: _buttonPadding, child: CupertinoButton(
                           padding: const EdgeInsets.all(3),
                           onPressed: null,
                           color: stundenplanFirstColumnColor,
                           disabledColor: stundenplanFirstColumnColor,
                           pressedOpacity: 1.0,
                           child: Text(stunde, maxLines: 1, overflow: TextOverflow.ellipsis,),
-                        ),
+                        ),),
                       );
                     })
                   ],
