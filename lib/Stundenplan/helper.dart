@@ -40,9 +40,11 @@ CupertinoButton getButton({
   required int d,
   required int h,
   required int a,
+  required BorderRadius buttonRandRaduis,
 }) {
   if (stundenplanA[d][h].isEmpty) {
     return CupertinoButton(
+      borderRadius: buttonRandRaduis,
       padding: const EdgeInsets.all(3),
       onPressed: changingFach == -1
           ? null
@@ -59,6 +61,7 @@ CupertinoButton getButton({
     );
   } else {
     return CupertinoButton(
+      borderRadius: buttonRandRaduis,
       padding: const EdgeInsets.all(3),
       onPressed: () {
         clickButton(

@@ -31,7 +31,8 @@ class StundenplanBearbeiten extends StatefulWidget {
 class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
   double breite = 0.0;
   List<List<List<String>>> stundenplanB = [];
-  final EdgeInsetsGeometry _buttonPadding = const EdgeInsets.all(0);
+  final EdgeInsetsGeometry _buttonPadding = const EdgeInsets.all(1.1);  //Weißer Rand um jeden Button
+  final BorderRadius _buttonRandRaduis = const BorderRadius.all(Radius.circular(2));  //Radius der Abrundung der Ecken der Buttons
 
   void stundenplanBAktualisieren() {
     stundenplanB = List.generate(
@@ -109,6 +110,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
     }) {
       if (stundenplanB[d][h].isEmpty) {
         return CupertinoButton(
+          borderRadius: _buttonRandRaduis,
           padding: const EdgeInsets.all(3),
           onPressed: () {
             if (widget.zeiten.containsKey(d)) {
@@ -130,6 +132,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
         );
       } else {
         return CupertinoButton(
+          borderRadius: _buttonRandRaduis,
           padding: const EdgeInsets.all(3),
           onPressed: () {
             if (widget.zeiten.containsKey(d)) {
@@ -164,6 +167,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
             height: breite*stundenplanHoeheNotifier.value,
             width: breite,
             child: Padding(padding: _buttonPadding, child: CupertinoButton(
+              borderRadius: _buttonRandRaduis,
               padding: const EdgeInsets.all(3),
               onPressed: null,
               color: stundenplanFirstColumnColor,
@@ -217,13 +221,14 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
             SizedBox(
               height: breite*stundenplanHoeheNotifier.value,
               width: breite,
-              child: Padding(padding: _buttonPadding, child: const CupertinoButton(
-                padding: EdgeInsets.all(3),
+              child: Padding(padding: _buttonPadding, child: CupertinoButton(
+                borderRadius: _buttonRandRaduis,
+                padding: const EdgeInsets.all(3),
                 onPressed: null,
                 color: stundenplanFirstColumnColor,
                 disabledColor: stundenplanFirstColumnColor,
                 pressedOpacity: 1.0,
-                child: Text(''),
+                child: const Text(''),
               ),),
             ),
             ...stunden.map((stunde) {
@@ -231,6 +236,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
                 height: breite*stundenplanHoeheNotifier.value,
                 width: breite,
                 child: Padding(padding: _buttonPadding, child: CupertinoButton(
+                  borderRadius: _buttonRandRaduis,
                   padding: const EdgeInsets.all(3),
                   onPressed: null,
                   color: stundenplanFirstColumnColor,
