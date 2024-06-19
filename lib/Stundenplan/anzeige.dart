@@ -62,7 +62,7 @@ class _StundenplanState extends State<Stundenplan> {
                     return Expanded(
                       child: SizedBox(
                         height: breite*stundenplanHoeheNotifier.value,
-                        child: getButton(
+                        child: Padding(padding: _buttonPadding, child:  getButton(
                             context: context,
                             changingFach: -1,
                             d: d,
@@ -70,7 +70,7 @@ class _StundenplanState extends State<Stundenplan> {
                             a: a,
                             buttonRandRaduis: _buttonRandRaduis,),
                       ),
-                    );
+                    ),);
                   }),
                 ),
               );
