@@ -1,5 +1,5 @@
 // Hier kommen globale Variablen hin
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 const List<String> wochentage = [
   'Montag',
@@ -26,3 +26,4 @@ const List<String> stunden = [
 ];
 
 final ValueNotifier<double> stundenplanHoeheNotifier = ValueNotifier<double>(1.3);
+final ValueNotifier<CupertinoThemeData> themeNotifier = ValueNotifier<CupertinoThemeData>(const CupertinoThemeData(brightness: Brightness.light));

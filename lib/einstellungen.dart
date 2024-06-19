@@ -2,7 +2,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:suppaapp/globals.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Einstellungen extends StatefulWidget {
   const Einstellungen({super.key});
@@ -12,31 +11,21 @@ class Einstellungen extends StatefulWidget {
 }
 
 class EinstellungenState extends State<Einstellungen> {
-
-  Future<void> _loadPreferences() async {
-    final SharedPreferences preferences = await SharedPreferences.getInstance();
-    double? stundenplanHoehe = preferences.getDouble('stundenplanHoehe');
-    if (stundenplanHoehe != null) {
-      stundenplanHoeheNotifier.value = stundenplanHoehe;
-    }
-  }
-
-  Future<void> _savePreferences() async {
-    final SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setDouble('stundenplanHoehe', stundenplanHoeheNotifier.value);
-  }
-
   final TextEditingController _stundenplanHoeheController = TextEditingController();
+  bool _darkmode = (themeNotifier.value.brightness == Brightness.dark);
   //final GlobalKey _stundenplanHoeheKey = GlobalKey();
 
   @override
   void initState() {
     _stundenplanHoeheController.text = stundenplanHoeheNotifier.value.toString();
-    _loadPreferences();
     stundenplanHoeheNotifier.addListener(() {
       setState(() {
-        _savePreferences();
         _stundenplanHoeheController.text = stundenplanHoeheNotifier.value.toString();
+      });
+    });
+    themeNotifier.addListener(() {
+      setState(() {
+        _darkmode = ((themeNotifier.value.brightness == Brightness.dark));
       });
     });
     super.initState();
@@ -52,6 +41,19 @@ class EinstellungenState extends State<Einstellungen> {
           ),
           CupertinoListSection(
             children: [
+              CupertinoListTile(
+                title: const Text('Darkmode'),
+                subtitle: const Text('Dunke Anzeige'),
+                trailing: CupertinoSwitch(
+                  value: _darkmode,
+                  activeColor: CupertinoColors.activeBlue,
+                  onChanged: (bool? value) {
+                    themeNotifier.value = value ?? false
+                    ? const CupertinoThemeData(brightness: Brightness.dark)
+                    : const CupertinoThemeData(brightness: Brightness.light);
+                  },
+                ),
+              ),
               CupertinoListTile(
                 title: const Text('Höhe Stundenplan'),
                 subtitle: const Text('Höhe der Tiles im Verhältnis zur Breite', maxLines: 3,),
