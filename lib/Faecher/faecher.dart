@@ -1,6 +1,7 @@
 // Die "Startseite" für die einzelnen Fächer
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'dart:collection';
 import 'package:suppaapp/FaecherEinstellungen/bearbeiten.dart';
 import 'package:suppaapp/Faecher/management.dart';
@@ -139,7 +140,7 @@ class _FachState extends State<Fach> {
                   padding: EdgeInsets.zero,
                   child: const Icon(CupertinoIcons.settings),
                   onPressed: () async {
-                    (String, SplayTreeMap<int, SplayTreeSet<int>>)? result =
+                    (String, SplayTreeMap<int, SplayTreeSet<int>>, Color)? result =
                       await Navigator.of(context).push(CupertinoPageRoute(
                         builder: ((context) => FachBearbeiten(widget))));
                     if (result != null) {
@@ -147,6 +148,7 @@ class _FachState extends State<Fach> {
                         index: faecher.faecher.indexOf(widget),
                         name: result.$1,
                         zeiten: result.$2,
+                        farbe: result.$3,
                       );
                     }
                   },
