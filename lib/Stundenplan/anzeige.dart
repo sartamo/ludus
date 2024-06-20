@@ -21,8 +21,8 @@ class _StundenplanState extends State<Stundenplan> {
   final BorderRadius _buttonRandRaduis = const BorderRadius.all(Radius.circular(2));  //Radius der Abrundung der Ecken der Buttons
 
   List<Column> getTage(double breite) {
-    return List.generate((wochentage.length), (d) {
-      //Liste von wochentage.length Collumns it den jewailigen Stunden als CupertinoButton
+    return List.generate((wochenendeNotifier.value == true ? 7: 5), (d) {
+      //Liste von wochenendeNotifier.value == true ? 7: 5 Collumns it den jewailigen Stunden als CupertinoButton
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -40,7 +40,7 @@ class _StundenplanState extends State<Stundenplan> {
                   d], maxLines: 1, overflow: TextOverflow.ellipsis,), // d is the index of the day; h is the index of the hour; a is the index of the subject (if there are multiple subjects in one hour)
             ),),
           ),
-          ...List.generate(stunden.length, (h) {
+          ...List.generate(anzahlStundenNotifier.value, (h) {
             if (stundenplanA[d][h].isEmpty) {
               return SizedBox(
                 height: breite*stundenplanHoeheNotifier.value,
@@ -136,34 +136,37 @@ class _StundenplanState extends State<Stundenplan> {
       );
     }
   }
+  
+  void _updateState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    stundenplanHoeheNotifier.addListener(() {
-      setState(() {});
-    });
-    faecher.addListener(() {
-      if (mounted) {
-        // Ruft setState nur auf, wenn das Widget angezeigt wird
-        setState(() {});
-      }
-    });
+    stundenplanHoeheNotifier.addListener(_updateState);
+    wochenendeNotifier.addListener(_updateState);
+    anzahlStundenNotifier.addListener(_updateState);
+    faecher.addListener(_updateState);
   }
 
   @override
   void dispose() {
     super.dispose();
-    stundenplanHoeheNotifier.removeListener(() {});
-    faecher.removeListener(() {});
+    stundenplanHoeheNotifier.removeListener(_updateState);
+    wochenendeNotifier.removeListener(_updateState);
+    anzahlStundenNotifier.removeListener(_updateState);
+    faecher.removeListener(_updateState);
   }
 
   @override
   Widget build(BuildContext context) {
     aktualisiereStundenplanA();
 
-    final double breite = MediaQuery.of(context).size.width /
-        (wochentage.length + 1); //breite der Spalten
+    double breite = MediaQuery.of(context).size.width /
+        ((wochenendeNotifier.value == true ? 7: 5)+1); //breite der Spalten
 
     List<Widget> tage = getTage(breite);
 
@@ -226,7 +229,7 @@ class _StundenplanState extends State<Stundenplan> {
                         child: const Text(''),
                       ),
                     ),),
-                    ...stunden.map((stunde) {
+                    ...List.generate(anzahlStundenNotifier.value, (stunde) {
                       return SizedBox(
                         height: breite*stundenplanHoeheNotifier.value,
                         width: breite,
@@ -237,7 +240,7 @@ class _StundenplanState extends State<Stundenplan> {
                           color: stundenplanFirstColumnColor,
                           disabledColor: stundenplanFirstColumnColor,
                           pressedOpacity: 1.0,
-                          child: Text(stunde, maxLines: 1, overflow: TextOverflow.ellipsis,),
+                          child: Text(stunden[stunde], maxLines: 1, overflow: TextOverflow.ellipsis,),
                         ),),
                       );
                     })

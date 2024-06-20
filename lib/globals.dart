@@ -11,19 +11,9 @@ const List<String> wochentage = [
   'Sonntag'
 ];
 
-const List<String> stunden = [
-  '1. Stunde',
-  '2. Stunde',
-  '3. Stunde',
-  '4. Stunde',
-  '5. Stunde',
-  '6. Stunde',
-  '7. Stunde',
-  '8. Stunde',
-  '9. Stunde',
-  '10. Stunde',
-  '11. Stunde',
-];
+final List<String> stunden = List.generate(99, (index) => '${index + 1}. Stunde');
 
 final ValueNotifier<double> stundenplanHoeheNotifier = ValueNotifier<double>(1.3);
 final ValueNotifier<CupertinoThemeData> themeNotifier = ValueNotifier<CupertinoThemeData>(const CupertinoThemeData(brightness: Brightness.light));
+final ValueNotifier<bool> wochenendeNotifier = ValueNotifier<bool>(false);
+final ValueNotifier<int> anzahlStundenNotifier = ValueNotifier<int>(6);

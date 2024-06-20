@@ -36,22 +36,26 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
 
   void stundenplanBAktualisieren() {
     stundenplanB = List.generate(
-        wochentage.length, (_) => List.generate(stunden.length, (_) => []));
+        (wochenendeNotifier.value == true ? 7: 5), (_) => List.generate(anzahlStundenNotifier.value, (_) => []));
     for (int f = 0; f < faecher.faecher.length; f++) {
       if (f != widget.currentFachIndex) {
-        for (int w = 0; w < wochentage.length; w++) {
+        for (int w = 0; w < (wochenendeNotifier.value == true ? 7: 5); w++) {
           SplayTreeSet<int>? myZeiten = faecher.faecher[f].zeiten[w];
           if (myZeiten != null) {
             for (int s in myZeiten) {
-              stundenplanB[w][s].add(faecher.faecher[f].name);
+              if (s < anzahlStundenNotifier.value) {
+                stundenplanB[w][s].add(faecher.faecher[f].name);
+              }
             }
           }
         }
       } else {
-        for (int w = 0; w < wochentage.length; w++) {
-          for (int s = 0; s < stunden.length; s++) {
+        for (int w = 0; w < (wochenendeNotifier.value == true ? 7: 5); w++) {
+          for (int s = 0; s < anzahlStundenNotifier.value; s++) {
             if (widget.zeiten[w]?.contains(s) ?? false) {
-              stundenplanB[w][s].add(widget.name);
+              if (s < anzahlStundenNotifier.value) {
+                stundenplanB[w][s].add(widget.name);
+              }
             }
           }
         }
@@ -59,39 +63,44 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
     }
 
     if (widget.currentFachIndex == -1) {
-      for (int w = 0; w < wochentage.length; w++) {
-        for (int s = 0; s < stunden.length; s++) {
+      for (int w = 0; w < (wochenendeNotifier.value == true ? 7: 5); w++) {
+        for (int s = 0; s < anzahlStundenNotifier.value; s++) {
           if (widget.zeiten[w]?.contains(s) ?? false) {
-            stundenplanB[w][s].add(widget.name);
+            if (s < anzahlStundenNotifier.value) {
+              stundenplanB[w][s].add(widget.name);
+            }
           }
         }
       }
     }
 
-    setState(() {});
+    _updateState();
   }
+
+  void _updateState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
 
   @override
   void initState() {
     super.initState();
     stundenplanBAktualisieren();
-
-    stundenplanHoeheNotifier.addListener(() {
-      setState(() {});
-      });
-    widget.colorNotifier.addListener(() {
-      setState(() {});
-    });
+    
+    stundenplanHoeheNotifier.addListener(_updateState);
+    wochenendeNotifier.addListener(_updateState);
+    anzahlStundenNotifier.addListener(_updateState);
+    widget.colorNotifier.addListener(_updateState);
   }
 
   @override
   void dispose() {
-    stundenplanHoeheNotifier.removeListener(() {
-      setState(() {});
-    });
-    widget.colorNotifier.removeListener(() {
-      setState(() {});
-    });
+    stundenplanHoeheNotifier.removeListener(_updateState);
+    wochenendeNotifier.removeListener(_updateState);
+    anzahlStundenNotifier.removeListener(_updateState);
+    widget.colorNotifier.removeListener(_updateState);
     super.dispose();
   }
 
@@ -100,7 +109,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
     stundenplanBAktualisieren();
 
     double breite = (MediaQuery.of(context).size.width * (1 - 0.1 * 2)) /
-        (wochentage.length + 1); //breite der Spalten
+        ((wochenendeNotifier.value == true ? 7: 5) + 1); //breite der Spalten
 
     CupertinoButton getAenderungsButton({
       //gibt einen Button zurück
@@ -158,8 +167,8 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
       }
     }
 
-    List<Widget> tage = List.generate((wochentage.length), (d) {
-      //Liste von wochentage.length Collumns it den jewailigen Stunden als CupertinoButton
+    List<Widget> tage = List.generate(((wochenendeNotifier.value == true ? 7: 5)), (d) {
+      //Liste von (wochenendeNotifier.value == true ? 7: 5) Collumns it den jewailigen Stunden als CupertinoButton
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -177,7 +186,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
                   d], maxLines: 1, overflow: TextOverflow.ellipsis,), // d is the index of the day; h is the index of the hour; a is the index of the subject (if there are multiple subjects in one hour)
             ),),
           ),
-          ...List.generate(stunden.length, (h) {
+          ...List.generate(anzahlStundenNotifier.value, (h) {
             if (stundenplanB[d][h].isEmpty) {
               return SizedBox(
                 height: breite*stundenplanHoeheNotifier.value,
@@ -231,7 +240,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
                 child: const Text(''),
               ),),
             ),
-            ...stunden.map((stunde) {
+            ...List.generate(anzahlStundenNotifier.value,(stunde) {
               return SizedBox(
                 height: breite*stundenplanHoeheNotifier.value,
                 width: breite,
@@ -242,7 +251,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
                   color: stundenplanFirstColumnColor,
                   disabledColor: stundenplanFirstColumnColor,
                   pressedOpacity: 1.0,
-                  child: Text(stunde, maxLines: 1, overflow: TextOverflow.ellipsis,),
+                  child: Text(stunden[stunde], maxLines: 1, overflow: TextOverflow.ellipsis,),
                 ),),
               );
             })

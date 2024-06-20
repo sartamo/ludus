@@ -12,20 +12,22 @@ const Color stundenplanFreeColor =
 
 List<List<List<String>>> stundenplanA = List.generate(
     //Äußere Liste: Wochentag, mittlere Liste: Stunde, innere Liste: Nammen der Fächer
-    wochentage.length,
-    (_) => List.generate(stunden.length, (_) => []));
+    (wochenendeNotifier.value == true ? 7: 5),
+    (_) => List.generate(anzahlStundenNotifier.value, (_) => []));
 
 void aktualisiereStundenplanA() {
   //aktualisiert _stundenplanA an Hand von facher
   stundenplanA = List.generate(
-      wochentage.length, (_) => List.generate(stunden.length, (_) => []));
+      (wochenendeNotifier.value == true ? 7: 5), (_) => List.generate(anzahlStundenNotifier.value, (_) => []));
   for (int f = 0; f < faecher.faecher.length; f++) {
     Fach myFach = faecher.faecher[f];
-    for (int w = 0; w < wochentage.length; w++) {
+    for (int w = 0; w < (wochenendeNotifier.value == true ? 7: 5); w++) {
       SplayTreeSet<int>? myZeiten = myFach.zeiten[w];
       if (myZeiten != null) {
         for (int s in myZeiten) {
-          stundenplanA[w][s].add(myFach.name);
+          if (s < anzahlStundenNotifier.value) {
+            stundenplanA[w][s].add(myFach.name);
+          }
         }
       }
     }
