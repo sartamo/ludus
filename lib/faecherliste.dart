@@ -96,85 +96,88 @@ class _FaecherlisteState extends State<Faecherliste> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            CupertinoNavigationBar(
-              middle: const Text('Fächerliste'),
-              trailing: CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: const Icon(CupertinoIcons.add),
-                onPressed: () {
-                  _fachHinzufuegen();
-                },
-              ),
+      navigationBar: CupertinoNavigationBar(
+        middle: const Text('Fächerliste'),
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: const Icon(CupertinoIcons.add),
+          onPressed: () {
+            _fachHinzufuegen();
+          },
+        ),
+      ),
+      child: SafeArea(
+        minimum: EdgeInsets.only(
+          top: const CupertinoNavigationBar().preferredSize.height,
+        ),
+        child: SingleChildScrollView(
+          child: faecher.faecher.isEmpty
+          ? const Center(
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 20,
+                ),
+                Text('Füge Fächer hinzu, damit sie hier erscheinen'),
+              ],
             ),
-            faecher.faecher.isEmpty
-                ? const Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text('Füge Fächer hinzu, damit sie hier erscheinen'),
-                    ],
-                  )
-                : CupertinoListSection(
-                    children:
-                        List<Widget>.generate(faecher.faecher.length, (index) {
-                      return CupertinoListTile(
-                        title: Text(faecher.faecher[index].name),
-                        subtitle: Text(_getSubtitle(faecher.faecher[index])),
-                        trailing: Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              CupertinoButton(
-                                padding: EdgeInsets.zero,
-                                child: const Icon(CupertinoIcons.settings),
-                                onPressed: () => _fachBearbeiten(index),
-                              ),
-                              CupertinoButton(
-                                  padding: EdgeInsets.zero,
-                                  child: const Icon(CupertinoIcons.minus),
-                                  onPressed: () {
-                                    showCupertinoDialog(
-                                      context: context,
-                                      builder: (context) =>
-                                          CupertinoAlertDialog(
-                                        title: Text(
-                                            '${faecher.faecher[index].name} löschen?'),
-                                        content: Text(
-                                            'Sind Sie sicher, dass Sie das Fach ${faecher.faecher[index].name} löschen möchten?'),
-                                        actions: [
-                                          CupertinoDialogAction(
-                                            isDefaultAction: true,
-                                            child: const Text('Abbrechen'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          CupertinoDialogAction(
-                                            isDestructiveAction: true,
-                                            child: const Text('Löschen'),
-                                            onPressed: () {
-                                              faecher.removeFach(index);
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }),
-                            ]),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            CupertinoPageRoute(
-                                builder: (context) => faecher.faecher[index]),
-                          );
-                        },
-                      );
-                    }),
-                  ),
-          ],
+          )
+          : CupertinoListSection(
+            children:
+              List<Widget>.generate(faecher.faecher.length, (index) {
+                return CupertinoListTile(
+                  title: Text(faecher.faecher[index].name),
+                  subtitle: Text(_getSubtitle(faecher.faecher[index])),
+                  trailing: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          child: const Icon(CupertinoIcons.settings),
+                          onPressed: () => _fachBearbeiten(index),
+                        ),
+                        CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            child: const Icon(CupertinoIcons.minus),
+                            onPressed: () {
+                              showCupertinoDialog(
+                                context: context,
+                                builder: (context) =>
+                                    CupertinoAlertDialog(
+                                  title: Text(
+                                      '${faecher.faecher[index].name} löschen?'),
+                                  content: Text(
+                                      'Sind Sie sicher, dass Sie das Fach ${faecher.faecher[index].name} löschen möchten?'),
+                                  actions: [
+                                    CupertinoDialogAction(
+                                      isDefaultAction: true,
+                                      child: const Text('Abbrechen'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    CupertinoDialogAction(
+                                      isDestructiveAction: true,
+                                      child: const Text('Löschen'),
+                                      onPressed: () {
+                                        faecher.removeFach(index);
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
+                      ]),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                          builder: (context) => faecher.faecher[index]),
+                    );
+                  },
+                );
+              }),
+            ),
         ),
       ),
     );

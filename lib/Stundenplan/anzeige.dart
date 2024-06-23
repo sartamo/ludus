@@ -170,53 +170,69 @@ class _StundenplanState extends State<Stundenplan> {
 
     List<Widget> tage = getTage(breite);
 
-    return Padding(
+    return CupertinoPageScaffold(
       //main Widget
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            CupertinoNavigationBar(
-              middle: Stack(alignment: Alignment.center, children: [
-                const Text('Stundenplan'),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Tooltip(
-                      message: 'Fach bearbeiten',
-                      child: CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        child: const Icon(CupertinoIcons.table_badge_more),
-                        onPressed: () async {
-                          int index = await showPopup();
-                          if(index != -1) {
-                            _fachBearbeiten(index);
-                          }
-                        },
-                      ),
-                    ),
-                    Tooltip(
-                      message: 'Fach hinzufügen',
-                      child: CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        child: const Icon(CupertinoIcons.add),
-                        onPressed: () => _fachHinzufuegen(),
-                      ),
-                    ),
-                  ],
+      navigationBar: CupertinoNavigationBar(
+        middle: Stack(alignment: Alignment.center, children: [
+          const Text('Stundenplan'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Tooltip(
+                message: 'Fach bearbeiten',
+                child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: const Icon(CupertinoIcons.table_badge_more),
+                  onPressed: () async {
+                    int index = await showPopup();
+                    if(index != -1) {
+                      _fachBearbeiten(index);
+                    }
+                  },
                 ),
-              ]),
-            ),
-            Row(
-              //main Row
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  // First column (Side Bar)
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
+              ),
+              Tooltip(
+                message: 'Fach hinzufügen',
+                child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: const Icon(CupertinoIcons.add),
+                  onPressed: () => _fachHinzufuegen(),
+                ),
+              ),
+            ],
+          ),
+        ],),
+      ),
+      child: SafeArea(
+        minimum: EdgeInsets.only(
+          top: const CupertinoNavigationBar().preferredSize.height,
+          bottom: MediaQuery.of(context).padding.bottom,
+        ),
+        child: SingleChildScrollView(
+          child: Row(
+            //main Row
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                // First column (Side Bar)
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: breite*stundenplanHoeheNotifier.value,
+                    width: breite,
+                    child: Padding(padding: _buttonPadding, child: CupertinoButton(
+                      borderRadius: _buttonRandRaduis,
+                      padding: const EdgeInsets.all(3),
+                      onPressed: null,
+                      color: stundenplanFirstColumnColor,
+                      disabledColor: stundenplanFirstColumnColor,
+                      pressedOpacity: 1.0,
+                      child: const Text(''),
+                    ),
+                  ),),
+                  ...List.generate(anzahlStundenNotifier.value, (stunde) {
+                    return SizedBox(
                       height: breite*stundenplanHoeheNotifier.value,
                       width: breite,
                       child: Padding(padding: _buttonPadding, child: CupertinoButton(
@@ -226,30 +242,15 @@ class _StundenplanState extends State<Stundenplan> {
                         color: stundenplanFirstColumnColor,
                         disabledColor: stundenplanFirstColumnColor,
                         pressedOpacity: 1.0,
-                        child: const Text(''),
-                      ),
-                    ),),
-                    ...List.generate(anzahlStundenNotifier.value, (stunde) {
-                      return SizedBox(
-                        height: breite*stundenplanHoeheNotifier.value,
-                        width: breite,
-                        child: Padding(padding: _buttonPadding, child: CupertinoButton(
-                          borderRadius: _buttonRandRaduis,
-                          padding: const EdgeInsets.all(3),
-                          onPressed: null,
-                          color: stundenplanFirstColumnColor,
-                          disabledColor: stundenplanFirstColumnColor,
-                          pressedOpacity: 1.0,
-                          child: Text(stunden[stunde], maxLines: 1, overflow: TextOverflow.ellipsis,),
-                        ),),
-                      );
-                    })
-                  ],
-                ),
-                ...tage
-              ],
-            ),
-          ],
+                        child: Text(stunden[stunde], maxLines: 1, overflow: TextOverflow.ellipsis,),
+                      ),),
+                    );
+                  })
+                ],
+              ),
+              ...tage
+            ],
+          ),
         ),
       ),
     );
