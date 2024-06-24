@@ -18,4 +18,4 @@ final ValueNotifier<CupertinoThemeData> themeNotifier = ValueNotifier<CupertinoT
 final ValueNotifier<bool> wochenendeNotifier = ValueNotifier<bool>(false);
 final ValueNotifier<int> anzahlStundenNotifier = ValueNotifier<int>(6);
 
-const String currentVersion = 'v0.1.4';
+const String currentVersion = 'v0.1.5';
