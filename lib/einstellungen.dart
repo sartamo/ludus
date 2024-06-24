@@ -34,13 +34,13 @@ class EinstellungenState extends State<Einstellungen> {
         if (version != null && version is String) {
           return version;
         } else {
-          throw const FormatException('Could not find version number: Invalid json file');
+          return Future.error(Exception('Suche auf https://github.com/sartamo/ludus/releases nach einem Update, das diesen Fehler behebt'));
         }
       } else {
-        throw ClientException('Could not fetch data: Status code ${response.statusCode}');
+        return Future.error(Exception('Status code ${response.statusCode}. Evtl. hast du zu oft aktualisiert oder keine Internetverbindung'));
       }
     } catch(e) {
-      return Future.error(e.toString());
+      return Future.error(Exception('Überprüfe deine Internetverbindung'));
     }
   }
 
@@ -57,7 +57,7 @@ class EinstellungenState extends State<Einstellungen> {
 
   Widget _error(String error) => CupertinoListTile( // Konnte die Daten nicht herunterladen
     title: const Text(
-      'Konnte keine Verbindung zu Github aufbauen.',
+      'Konnte keine Verbindung zu Github aufbauen',
       style: TextStyle(
         color: CupertinoColors.destructiveRed,
       ),
@@ -229,7 +229,7 @@ class EinstellungenState extends State<Einstellungen> {
 
   @override
   void initState() {
-    if (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.linux) {
+    if (defaultTargetPlatform == TargetPlatform.android) {
       _latestVersion = _loadLatestVersion();
     }
     _stundenplanHoeheController.text = stundenplanHoeheNotifier.value.toString();
@@ -259,7 +259,7 @@ class EinstellungenState extends State<Einstellungen> {
         ),
         child: SingleChildScrollView(
           child: CupertinoListSection(
-            children: defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.linux
+            children: defaultTargetPlatform == TargetPlatform.android
               ? _getAndroidWidgets() // Android: Release Notification
               : _getUniversalWidgets() // Alles außer Android (hat keine Releases auf Github)
           ),
