@@ -17,3 +17,5 @@ final ValueNotifier<double> stundenplanHoeheNotifier = ValueNotifier<double>(1.3
 final ValueNotifier<CupertinoThemeData> themeNotifier = ValueNotifier<CupertinoThemeData>(const CupertinoThemeData(brightness: Brightness.light));
 final ValueNotifier<bool> wochenendeNotifier = ValueNotifier<bool>(false);
 final ValueNotifier<int> anzahlStundenNotifier = ValueNotifier<int>(6);
+
+const String currentVersion = 'v0.1.4';
