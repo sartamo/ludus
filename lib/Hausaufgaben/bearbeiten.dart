@@ -33,37 +33,17 @@ class _HausaufgabeBearbeitenState extends State<HausaufgabeBearbeiten> {
           margin: EdgeInsets.only(
              bottom: MediaQuery.of(context).viewInsets.bottom,
         	),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CupertinoButton(
-                child: const Text('Abbrechen'), 
-                onPressed: () => Navigator.pop(context),
-              ),
-              Expanded(
-                child: CupertinoDatePicker(
-                  showDayOfWeek: true,
-                  dateOrder: DatePickerDateOrder.dmy,
-                  mode: CupertinoDatePickerMode.date,
-                  initialDateTime: _datum,
-                  minimumDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-                  itemExtent: 50,
-                  onDateTimeChanged: (DateTime newDateTime) {
-                   _datum = newDateTime;
-                   }
-                  )
-                ),
-              CupertinoButton(
-                child: const Text('Hinzufügen'),
-                onPressed: () {
-                  setState(() {
-                    _datum;
-                  });
-                Navigator.pop(context); 
-              },
-            ),
-            ],
-          )
+          child: CupertinoDatePicker(
+            showDayOfWeek: true,
+            dateOrder: DatePickerDateOrder.dmy,
+            mode: CupertinoDatePickerMode.date,
+            initialDateTime: _datum,
+            minimumDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+            itemExtent: 50,
+            onDateTimeChanged: (DateTime newDateTime) {
+              setState(() {_datum = newDateTime;});
+            }
+          ),
         );
       },
     );
@@ -116,6 +96,11 @@ class _HausaufgabeBearbeitenState extends State<HausaufgabeBearbeiten> {
                   onPressed: _showDatePicker,
                   child: const Text('Abgabezeit verändern'),
                 ),
+                CupertinoButton(
+                  padding: const EdgeInsets.only(left:20),
+                  child: const Text('Heute'),
+                  onPressed: () => setState(() {_datum = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);}),
+                )
               ]
             ),
             Row(
@@ -124,7 +109,7 @@ class _HausaufgabeBearbeitenState extends State<HausaufgabeBearbeiten> {
                 Text(getSubtitlesDatum(_datum)),
                 CupertinoButton(
                   padding: const EdgeInsets.only(left: 20),
-                  child: const Text('reset'),
+                  child: const Text('Reset'),
                   onPressed: () => setState(() {_datum = _initialDatum;})
                 ),
               ],
