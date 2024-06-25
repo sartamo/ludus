@@ -74,7 +74,9 @@ class _HausaufgabeHinzufuegenState extends State<HausaufgabeHinzufuegen> {
         leading: CupertinoNavigationBarBackButton(
           onPressed: () => Navigator.of(context).pop(),
         ),
-        middle: Text('$_selectedName hinzufügen'),
+        middle: _selectedName == ''
+          ? const Text('Hausaufgabe hinzufügen')
+          : Text('$_selectedName hinzufügen'),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
           child: const Icon(CupertinoIcons.check_mark),

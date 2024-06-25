@@ -85,7 +85,9 @@ class _HausaufgabeBearbeitenState extends State<HausaufgabeBearbeiten> {
         leading: CupertinoNavigationBarBackButton(
           onPressed: () => Navigator.of(context).pop(),
         ),
-        middle: Text('$_selectedContent bearbeiten'),
+        middle: _selectedContent == ''
+          ? const Text('Hausaufgabe bearbeiten')
+          : Text('$_selectedContent bearbeiten'),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
           child: const Icon(CupertinoIcons.check_mark),
