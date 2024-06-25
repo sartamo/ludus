@@ -30,12 +30,22 @@ class SuppaappState extends State<Suppaapp> {
       ? const CupertinoThemeData(brightness: Brightness.dark)
       : const CupertinoThemeData(brightness: Brightness.light);
     }
+    bool? wochenende = preferences.getBool('wochenende');
+    if (wochenende != null) {
+      wochenendeNotifier.value = wochenende;
+    }
+    int? anzahlStunden = preferences.getInt('anzahlStunden');
+    if (anzahlStunden != null) {
+      anzahlStundenNotifier.value = anzahlStunden;
+    }
   }
 
   Future<void> _savePreferences() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setDouble('stundenplanHoehe', stundenplanHoeheNotifier.value);
     preferences.setBool('darkmode', (themeNotifier.value.brightness == Brightness.dark));
+    preferences.setBool('wochenende', wochenendeNotifier.value);
+    preferences.setInt('anzahlStunden', anzahlStundenNotifier.value);
   }
 
   CupertinoThemeData _theme = const CupertinoThemeData(brightness: Brightness.light);
@@ -50,9 +60,9 @@ class SuppaappState extends State<Suppaapp> {
       });
       _savePreferences();
     });
-    stundenplanHoeheNotifier.addListener(() {
-      _savePreferences();
-    });
+    stundenplanHoeheNotifier.addListener(() => _savePreferences());
+    wochenendeNotifier.addListener(() => _savePreferences());
+    anzahlStundenNotifier.addListener(() => _savePreferences());
   }
 
   @override
