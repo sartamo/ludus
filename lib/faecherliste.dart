@@ -24,10 +24,10 @@ class _FaecherlisteState extends State<Faecherliste> {
     String mySubtitle = '';
     int counter =
         0; // Damit die Kommata richtig zwischen den Wochentagen gesetzt werden
-    for (int w = 0; w < wochentage.length; w++) {
+    for (int w = 0; w < (wochenendeNotifier.value ? 7 : 5); w++) {
       // Geht die Wochentage durch
       Set<int>? myZeiten = myFach.zeiten[w];
-      if (myZeiten != null) {
+      if (myZeiten != null && !myZeiten.every((stunde) => stunde >= anzahlStundenNotifier.value)) { // Überprüft, ob es eine Stunde gibt, die in der Range von anzahlStunden ist
         if (counter != 0) {
           mySubtitle += ', ';
         }
@@ -36,11 +36,13 @@ class _FaecherlisteState extends State<Faecherliste> {
         counter++;
         mySubtitle += '${wochentage[w]} (';
         for (int s in myZeiten) {
-          if (counter2 != 0) {
-            mySubtitle += ', ';
+          if (s < anzahlStundenNotifier.value) {
+            if (counter2 != 0) {
+              mySubtitle += ', ';
+            }
+            counter2++;
+            mySubtitle += stunden[s];
           }
-          counter2++;
-          mySubtitle += stunden[s];
         }
         mySubtitle += ')';
       }
@@ -75,22 +77,26 @@ class _FaecherlisteState extends State<Faecherliste> {
     }
   }
 
+  void _updateState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-
-    faecher.addListener(() {
-      if (mounted) {
-        // Ruft setState nur auf, wenn das Widget angezeigt wird
-        setState(() {});
-      }
-    });
+    faecher.addListener(_updateState);
+    wochenendeNotifier.addListener(_updateState);
+    anzahlStundenNotifier.addListener(_updateState);
   }
 
   @override
   void dispose() {
     super.dispose();
-    faecher.removeListener(() {});
+    faecher.removeListener(_updateState);
+    wochenendeNotifier.removeListener(_updateState);
+    anzahlStundenNotifier.removeListener(_updateState);
   }
 
   @override

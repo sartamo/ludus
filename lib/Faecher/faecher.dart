@@ -54,9 +54,10 @@ class Fach extends StatefulWidget {
 
 class _FachState extends State<Fach> {
   late SplayTreeMap<DateTime, List<(int, String)>> _hausaufgabenMap;
+  late SplayTreeMap<int, SplayTreeSet<int>> _zeitenReduced;
   Pages _selectedPage = Pages.unterrichtszeiten;
   String _getSubtitleZeiten(int index) {
-    SplayTreeSet<int> value = widget.zeiten.values.toList()[index];
+    SplayTreeSet<int> value = _zeitenReduced.values.toList()[index];
     String subtitle = '';
     int counter = 0;
     for (int i in value) {
@@ -84,25 +85,47 @@ class _FachState extends State<Fach> {
     return map;
   }
 
+  SplayTreeMap<int, SplayTreeSet<int>> _getZeitenReduced() { // Reduziert die Zeiten auf die relevanten (anzuzeigenden) Zeiten
+    SplayTreeMap<int, SplayTreeSet<int>> zeitenReduced = SplayTreeMap();
+    widget.zeiten.forEach((key, value) {
+      if (key < 5 || wochenendeNotifier.value) { // Wenn der Tag unter der Woche ist oder Wochenende anzeigen an ist
+        if (!value.every((stunde) => stunde >= anzahlStundenNotifier.value)) { // Wenn es anzuzeigende Stunden gibt, füge zuerst eine leere Liste hinzu
+          zeitenReduced[key] = SplayTreeSet();
+          for (int stunde in value) {
+            zeitenReduced[key]!.add(stunde); // Füge anschließend alle anzuzeigenden Stunden hinzu
+          }
+        }
+      }
+    });
+    return zeitenReduced;
+  }
+
+  void _updateState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   void initState() {
     _hausaufgabenMap = _getHausaufgabenMap();
     super.initState();
-    faecher.addListener(() {
-      if (mounted) { // Ruft setState nur auf, wenn das Widget angezeigt wird
-        setState(() {_hausaufgabenMap = _getHausaufgabenMap();});
-      }
-    });
+    faecher.addListener(_updateState);
+    wochenendeNotifier.addListener(_updateState);
+    anzahlStundenNotifier.addListener(_updateState);
   }
 
   @override
   void dispose() {
     super.dispose();
-    faecher.removeListener(() {});
+    faecher.removeListener(_updateState);
+    wochenendeNotifier.removeListener(_updateState);
+    anzahlStundenNotifier.removeListener(_updateState);
   }
 
   @override
   Widget build(BuildContext context) {
+    _zeitenReduced = _getZeitenReduced();
     _hausaufgabenMap = _getHausaufgabenMap();
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
@@ -189,7 +212,7 @@ class _FachState extends State<Fach> {
           child: Column(
             children: <Widget>[
               _selectedPage == Pages.unterrichtszeiten
-                ? widget.zeiten.isEmpty
+                ? _zeitenReduced.isEmpty
                   ? Center(
                     child: Column(
                       children: [
@@ -203,9 +226,9 @@ class _FachState extends State<Fach> {
                   : CupertinoListSection( // Der Inhalt für die Unterrichtszeiten
                     header: Text(widget.name), 
                     children: List<Widget>.generate(
-                      widget.zeiten.length,
+                      _zeitenReduced.length,
                       (index) => CupertinoListTile(
-                        title: Text(wochentage[widget.zeiten.keys.toList()[index]]),
+                        title: Text(wochentage[_zeitenReduced.keys.toList()[index]]),
                         subtitle: Text(_getSubtitleZeiten(index)),
                       ),
                     ),

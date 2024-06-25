@@ -46,25 +46,27 @@ class _HausaufgabenheftState extends State<Hausaufgabenheft> {
 
   late SplayTreeMap<DateTime, List<(Fach, int, String)>> _hausaufgabenMap;
 
+  void _updateState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   void initState() {
-    _hausaufgabenMap = _getHausaufgabenMap();
     super.initState();
-    faecher.addListener(() {
-      if (mounted) {
-        setState(() {_hausaufgabenMap = _getHausaufgabenMap();});
-      }
-    });
+    faecher.addListener(_updateState);
    }
 
    @override
    void dispose() {
     super.dispose();
-    faecher.removeListener(() {});
+    faecher.removeListener(_updateState);
    }
 
   @override
   Widget build(BuildContext context) {
+    _hausaufgabenMap = _getHausaufgabenMap();
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: const Text('Hausaufgabenheft'),

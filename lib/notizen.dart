@@ -30,20 +30,22 @@ class _NotizenState extends State<Notizen> {
     return result;
   }
 
+  void _updateState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    faecher.addListener(() {
-      if (mounted) {
-        setState(() {});
-      }
-    });
+    faecher.addListener(_updateState);
   }
 
   @override
   void dispose() {
     super.dispose();
-    faecher.removeListener(() {});
+    faecher.removeListener(_updateState);
   }
 
   @override
