@@ -18,7 +18,7 @@ final ValueNotifier<CupertinoThemeData> themeNotifier = ValueNotifier<CupertinoT
 final ValueNotifier<bool> wochenendeNotifier = ValueNotifier<bool>(false);
 final ValueNotifier<int> anzahlStundenNotifier = ValueNotifier<int>(6);
 
-const String currentVersion = 'v0.1.5';
-
 const double widthMultiplier = 0.03; // Abstand zum Rand seitlich: Multiplier von context width
 const double heightMultiplier = 0.02; // Abstand zur Navigation Bar von bestimmten Inhalten: Multiplier von context height
+
+const String currentVersion = 'v0.1.6';
