@@ -108,7 +108,7 @@ class StundenplanBearbeitenState extends State<StundenplanBearbeiten> {
   Widget build(BuildContext context) {
     stundenplanBAktualisieren();
 
-    double breite = (MediaQuery.of(context).size.width * (1 - 0.1 * 2)) /
+    double breite = (MediaQuery.of(context).size.width * (1 - widthMultiplier * 2)) /
         ((wochenendeNotifier.value == true ? 7: 5) + 1); //breite der Spalten
 
     CupertinoButton getAenderungsButton({

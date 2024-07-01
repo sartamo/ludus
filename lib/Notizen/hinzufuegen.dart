@@ -1,6 +1,7 @@
 // Die Seite, um eine Notiz hinzuzufügen
 
 import 'package:flutter/cupertino.dart';
+import 'package:suppaapp/globals.dart';
 
 class NotizHinzufuegen extends StatefulWidget {
   const NotizHinzufuegen({super.key});
@@ -30,9 +31,12 @@ class _NotizHinzufuegenState extends State<NotizHinzufuegen> {
         ),
       ),
       child: SafeArea(
-        minimum: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.1,
-          vertical: MediaQuery.of(context).size.height * 0.07
+        minimum: EdgeInsets.only(
+          right: MediaQuery.of(context).size.width * widthMultiplier,
+          left: MediaQuery.of(context).size.width *
+              widthMultiplier, // Geändert zu Variable in globals.dart
+          top: const CupertinoNavigationBar().preferredSize.height
+              + MediaQuery.of(context).size.height * heightMultiplier,
         ),
         child: SingleChildScrollView(
           child: Column(

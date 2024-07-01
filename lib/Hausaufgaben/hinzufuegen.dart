@@ -1,6 +1,7 @@
 // Seite, um eine Hausaufgabe hinzuzufügen
 
 import 'package:flutter/cupertino.dart';
+import 'package:suppaapp/globals.dart';
 
 class HausaufgabeHinzufuegen extends StatefulWidget {
   const HausaufgabeHinzufuegen({super.key});
@@ -66,9 +67,12 @@ class _HausaufgabeHinzufuegenState extends State<HausaufgabeHinzufuegen> {
       ),
       child: SafeArea(
         // Erstellt eine "Knauschzone" um die Ränder des Bildschirms
-        minimum: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * 0.1,
-            vertical: MediaQuery.of(context).size.height * 0.07),
+        minimum: EdgeInsets.only(
+          right: MediaQuery.of(context).size.width * widthMultiplier,
+          left: MediaQuery.of(context).size.width *
+              widthMultiplier, // Geändert zu Variable in globals.dart
+          top: const CupertinoNavigationBar().preferredSize.height
+              + MediaQuery.of(context).size.height * heightMultiplier),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [

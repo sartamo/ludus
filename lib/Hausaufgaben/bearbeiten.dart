@@ -1,6 +1,7 @@
 // Seite, um eine Hausaufgabe zu bearbeiten
 
 import 'package:flutter/cupertino.dart';
+import 'package:suppaapp/globals.dart';
 
 class HausaufgabeBearbeiten extends StatefulWidget {
   final (String, DateTime) hausaufgabe;
@@ -75,9 +76,12 @@ class _HausaufgabeBearbeitenState extends State<HausaufgabeBearbeiten> {
         ),
       ),
       child: SafeArea(
-        minimum: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.1,
-          vertical: MediaQuery.of(context).size.height * 0.07
+        minimum: EdgeInsets.only(
+          right: MediaQuery.of(context).size.width * widthMultiplier,
+          left: MediaQuery.of(context).size.width *
+              widthMultiplier, // Geändert zu Variable in globals.dart
+          top: const CupertinoNavigationBar().preferredSize.height
+              + MediaQuery.of(context).size.height * heightMultiplier,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,

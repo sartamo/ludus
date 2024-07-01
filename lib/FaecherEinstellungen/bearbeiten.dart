@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:suppaapp/Faecher/faecher.dart';
 import 'package:suppaapp/Faecher/management.dart';
 import 'package:suppaapp/FaecherEinstellungen/farb_slider.dart';
-//import 'package:suppaapp/globals.dart';
+import 'package:suppaapp/globals.dart';
 import 'package:suppaapp/Stundenplan/aenderung.dart';
 import 'dart:collection';
 
@@ -83,10 +83,13 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
       child: SingleChildScrollView(
         child: SafeArea(
           // Erstellt eine "Knauschzone" um die Ränder des Bildschirms
-          minimum: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width *
-                  0.1, //Bei Änderung von horizontal auch in stundenplan_Aenderung.dart bei der Definition von breite ändern (die 0.1 aus:(1-0.1*2)) (Momentan Zeile 31, kann sich aber ändern)
-              vertical: MediaQuery.of(context).size.height * 0.07),
+          minimum: EdgeInsets.only(
+              right: MediaQuery.of(context).size.width * widthMultiplier,
+              left: MediaQuery.of(context).size.width *
+                  widthMultiplier, // Geändert zu Variable in globals.dart
+              top: const CupertinoNavigationBar().preferredSize.height
+                  + MediaQuery.of(context).size.height * heightMultiplier,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [

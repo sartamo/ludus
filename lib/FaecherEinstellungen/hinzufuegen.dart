@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 //import 'package:suppaapp/FaecherEinstellungen/auswahlfunktionen.dart';
-//import 'package:suppaapp/globals.dart';
 import 'package:suppaapp/FaecherEinstellungen/farb_slider.dart';
 import 'package:suppaapp/Stundenplan/aenderung.dart';
 import 'dart:collection';
+import 'package:suppaapp/globals.dart';
 
 class FachHinzufuegen extends StatefulWidget {
   const FachHinzufuegen({super.key});
@@ -58,10 +58,13 @@ class _FachHinzufuegenState extends State<FachHinzufuegen> {
       child: SingleChildScrollView(
         child: SafeArea(
           // Erstellt eine "Knauschzone" um die Ränder des Bildschirms
-          minimum: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width *
-                  0.1, //Bei Änderung von horizontal auch in stundenplan_Aenderung.dart bei der Definition von breite ändern (die 0.1 aus:(1-0.1*2)) (Momentan Zeile 31, kann sich aber ändern)
-              vertical: MediaQuery.of(context).size.height * 0.07),
+          minimum: EdgeInsets.only(
+              right: MediaQuery.of(context).size.width * widthMultiplier,
+              left: MediaQuery.of(context).size.width *
+                  widthMultiplier, // Geändert zu Variable in globals.dart
+              top: const CupertinoNavigationBar().preferredSize.height
+                  + MediaQuery.of(context).size.height * heightMultiplier,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             // mainAxisAlignment: MainAxisAlignment.center,
