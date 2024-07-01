@@ -88,7 +88,7 @@ class _FachBearbeitenState extends State<FachBearbeiten> {
               left: MediaQuery.of(context).size.width *
                   widthMultiplier, // Geändert zu Variable in globals.dart
               top: const CupertinoNavigationBar().preferredSize.height
-                  + MediaQuery.of(context).size.height * heightMultiplier,
+                  + View.of(context).physicalSize.height * heightMultiplier,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,

@@ -55,7 +55,7 @@ class _NotizBearbeitenState extends State<NotizBearbeiten> {
           left: MediaQuery.of(context).size.width *
               widthMultiplier, // Geändert zu Variable in globals.dart
           top: const CupertinoNavigationBar().preferredSize.height
-              + MediaQuery.of(context).size.height * heightMultiplier,
+              + View.of(context).physicalSize.height * heightMultiplier,
         ),
         child: SingleChildScrollView(
           child: Column(

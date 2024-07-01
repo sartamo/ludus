@@ -165,7 +165,7 @@ class _StundenplanState extends State<Stundenplan> {
   Widget build(BuildContext context) {
     aktualisiereStundenplanA();
 
-    double breite = MediaQuery.of(context).size.width /
+    double breite = MediaQuery.of(context).size.width * (1 - 2 * widthMultiplier) /
         ((wochenendeNotifier.value == true ? 7: 5)+1); //breite der Spalten
 
     List<Widget> tage = getTage(breite);
@@ -203,12 +203,15 @@ class _StundenplanState extends State<Stundenplan> {
           ),
         ],),
       ),
-      child: SafeArea(
-        minimum: EdgeInsets.only(
-          top: const CupertinoNavigationBar().preferredSize.height,
-          bottom: MediaQuery.of(context).padding.bottom,
-        ),
-        child: SingleChildScrollView(
+      child: SingleChildScrollView(
+        child: SafeArea(
+          minimum: EdgeInsets.only(
+          right: MediaQuery.of(context).size.width * widthMultiplier,
+          left: MediaQuery.of(context).size.width *
+              widthMultiplier, // Geändert zu Variable in globals.dart
+          top: const CupertinoNavigationBar().preferredSize.height
+              + View.of(context).physicalSize.height * heightMultiplier,
+          ),
           child: Row(
             //main Row
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
